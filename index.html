@@ -1,0 +1,58 @@
+<!-- index.html (Client-side) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Drive Media Player</title>
+</head>
+<body>
+  <h1>Google Drive Media Player</h1>
+  <h2>Available Media Files</h2>
+  <ul id="file-list"></ul>
+  <div id="player-container">
+    <audio id="audio-player" controls style="display:none;"></audio>
+    <video id="video-player" controls width="600" style="display:none;"></video>
+  </div>
+  <script>
+    function listFiles() {
+      google.script.run.withSuccessHandler(displayFiles).getFiles();
+    }
+
+    function displayFiles(files) {
+      const fileList = document.getElementById('file-list');
+      fileList.innerHTML = '';
+      if (files.length > 0) {
+        files.forEach(file => {
+          const listItem = document.createElement('li');
+          listItem.textContent = file.name;
+          listItem.onclick = () => playFile(file);
+          fileList.appendChild(listItem);
+        });
+      } else {
+        fileList.innerHTML = 'No files found.';
+      }
+    }
+
+    function playFile(file) {
+      const videoPlayer = document.getElementById('video-player');
+      const audioPlayer = document.getElementById('audio-player');
+      const fileUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+      if (file.mimeType.includes('video')) {
+        videoPlayer.src = fileUrl;
+        videoPlayer.style.display = 'block';
+        audioPlayer.style.display = 'none';
+        videoPlayer.play();
+      } else if (file.mimeType.includes('audio')) {
+        audioPlayer.src = fileUrl;
+        audioPlayer.style.display = 'block';
+        videoPlayer.style.display = 'none';
+        audioPlayer.play();
+      }
+    }
+
+    // Load the files when the page loads
+    window.onload = listFiles;
+  </script>
+</body>
+</html>
