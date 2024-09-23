@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Drive Media Player</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <style>
+    label { margin: 2px 10px; }
+  </style>
+</head>
+<body>
+  <h1>Google Drive Media Player</h1>
+  <div id="msg">Loading Playlist...</div>
+  <audio controls id="audio-player" src="" type="audio/mpeg"></audio><br />
+  <div id="status"></div>
+  <div>
+    <input type="button" id="prevbtn" value="Previous" onClick="playPrevious()" disabled />
+    <input type="button" id="nextbtn" value="Next" onClick="playNext()" disabled />
+    <input type="button" id="pausebtn" value="Pause" onClick="pauseAudio()" disabled />
+  </div>
+  <div id="cntrls"></div>
+  <h2>Available Media Files</h2>
+  <select id="file-list" onchange="selectFile()">
+    <option value="">Select a file</option>
+  </select>
+  <script>
+    var selectionList = [];
+    var gVolume = 0.2;
+    var index = 0;
+
+    function listFiles() {
+      google.script.run.withSuccessHandler(displayFiles).getFiles();
+    }
+
+    function displayFiles(files) {
+      const fileList = document.getElementById('file-list');
+      fileList.innerHTML = '<option value="">Select a file</option>'; // Reset the dropdown
+      if (files.length > 0) {
+        files.forEach(file => {
+          selectionList.push(file); // Store the entire file object
+          const option = document.createElement('option');
+          option.value = file.name; // Use file name as the value
+          option.textContent = file.name; // Display file name in the dropdown
+          fileList.appendChild(option);
+        });
+      } else {
+        fileList.innerHTML = '<option value="">No files found.</option>';
+      }
+    }
+
+    function selectFile() {
+      const fileList = document.getElementById('file-list');
+      const selectedFileName = fileList.value;
+      const selectedFile = selectionList.find(file => file.name === selectedFileName);
+      if (selectedFile) {
+        playFile(selectedFile);
+      }
+    }
+
+    function playFile(file) {
+      if (!file || !file.id) {
+        console.error('File or File ID is missing');
+        return;
+      }
+      google.script.run.withSuccessHandler(function(fObj) {
+        const audioPlayer = document.getElementById('audio-player');
+        audioPlayer.src = fObj.uri; // Assuming fObj.uri contains the audio URL
+        audioPlayer.volume = gVolume;
+        audioPlayer.play().catch(error => {
+          console.error('Error playing audio:', error);
+          alert('Could not play audio: ' + error.message);
+        });
+
+        audioPlayer.onended = function() {
+          document.getElementById('status').innerHTML = 'Ended...';
+          playNext(); // Call playNext to load the next file
+        };
+        
+        audioPlayer.onplay = function() {
+          document.getElementById('msg').innerHTML = 'Playing: ' + file.name;
+          document.getElementById('status').innerHTML = 'Playing...';
+          document.getElementById('prevbtn').disabled = false;
+          document.getElementById('nextbtn').disabled = false;
+          document.getElementById('pausebtn').disabled = false;
+        };
+        
+        index++;
+      }).convMediaToDataUri(file.name); // Pass the file ID to the server-side function
+    }
+
+    function playNext() {
+      if (index < selectionList.length) {
+        document.getElementById('status').innerHTML = 'Loading...';
+        document.getElementById('msg').innerHTML = 'Next Selection: ' + selectionList[index].name;
+        google.script.run.withSuccessHandler(function(fObj) {
+          $('#audio-player').attr('src', fObj.uri);
+          var audio = document.getElementById('audio-player');
+          audio.volume = gVolume;
+          audio.play();
+        }).convMediaToDataUri(selectionList[index++].name);
+      } else {
+        document.getElementById('status').innerHTML = 'Playlist Complete';
+        document.getElementById('msg').innerHTML = '';
+      }
+    }
+
+    function playPrevious() {
+      if (index > 1) {
+        index -= 2; // Decrement index by 2 to go back to the previous file
+        playNext(); // Play the previous file
+      }
+    }
+
+    function pauseAudio() {
+      var audio = document.getElementById('audio-player');
+      audio.pause();
+    }
+
+    function replayPlaylist() {
+      index = 0;
+      document.getElementById('cntrls').innerHTML = '';
+      playNext();
+    }
+
+    // Load the files when the page loads
+    window.onload = listFiles;
+  </script>
+</body>
+</html>
