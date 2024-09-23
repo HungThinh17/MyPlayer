@@ -1,130 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Drive Media Player</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <style>
-    label { margin: 2px 10px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My YouTube Player</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+    <script>
+        let player;
+        let repeat = false; // Repeat is off by default
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtubePlayer', {
+                playerVars: {
+                    autoplay: 1,
+                    controls: 1,
+                    modestbranding: 1,
+                    showinfo: 0,
+                    fs: 0,
+                    rel: 0
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED && repeat) {
+                player.playVideo();
+            }
+        }
+
+        function extractVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|\/u\/\w\/|embed\/|watch\?v=|\&v=|watch\?.*v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function loadVideo(event) {
+            event.preventDefault();
+            const url = document.getElementById('youtubeUrl').value.trim(); // Trim whitespace
+            const videoId = extractVideoId(url);
+            if (videoId) {
+                player.loadVideoById(videoId);
+                player.playVideo();
+            } else {
+                alert('Invalid YouTube URL');
+            }
+        }
+
+        function toggleMode(mode) {
+            const playerElement = document.getElementById('youtubePlayer');
+            if (mode === 'audio') {
+                playerElement.style.width = "0";
+                playerElement.style.height = "0";
+            } else {
+                playerElement.style.width = "100%";
+                playerElement.style.height = "450px";
+            }
+        }
+
+        function togglePlayPause() {
+            const state = player.getPlayerState();
+            const url = document.getElementById('youtubeUrl').value.trim(); // Trim whitespace
+            if (url === '') {
+                alert('Please enter a YouTube URL to play or pause.'); // Alert if the URL is empty
+                return; // Prevent play/pause action
+            }
+            if (state === YT.PlayerState.PLAYING) {
+                player.pauseVideo();
+                document.getElementById('playPauseButton').innerHTML = '<i class="fas fa-play"></i>';
+            } else {
+                player.playVideo();
+                document.getElementById('playPauseButton').innerHTML = '<i class="fas fa-pause"></i>';
+            }
+        }
+
+        function toggleRepeat() {
+            repeat = !repeat; // Toggle repeat state
+            const repeatButton = document.getElementById('repeatButton');
+
+            // Change icon based on repeat state
+            if (repeat) {
+                repeatButton.innerHTML = '<i class="fas fa-sync-alt"></i>'; // Change icon to indicate repeat is on
+            } else {
+                repeatButton.innerHTML = '<i class="fas fa-redo"></i>'; // Change icon to indicate repeat is off
+            }
+        }
+
+        function checkInput() {
+            const url = document.getElementById('youtubeUrl').value.trim();
+            const playPauseButton = document.getElementById('playPauseButton');
+            if (url === '') {
+                playPauseButton.disabled = true; // Disable play button if input is empty
+            } else {
+                playPauseButton.disabled = false; // Enable play button if input is not empty
+            }
+        }
+
+        window.onload = () => {
+            toggleMode('audio');
+            checkInput(); // Initial check to disable button if needed
+            document.getElementById('youtubeUrl').addEventListener('input', checkInput); // Add event listener for input changes
+        };
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: url('https://mrwallpaper.com/images/hd/dance-battle-hip-hop-art-mre3ofjjxfn4g9ou.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: #7d7d7d;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        h1 {
+            font-family: 'Impact', sans-serif;
+            font-size: 48px;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        #form-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 500px;
+        }
+        #youtubePlayer {
+            width: 100%;
+            height: auto;
+            max-width: 1000px;
+            transition: width 0.3s, height 0.3s;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        input[type="text"] {
+            width: calc(100% - 130px);
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        .icon-button {
+            padding: 10px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: transparent;
+            color: white;
+            font-size: 24px;
+            transition: background 0.3s;
+        }
+        .icon-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 32px;
+            }
+            #form-container {
+                width: 95%;
+            }
+            input[type="text"] {
+                width: calc(100% - 80px);
+            }
+            .icon-button {
+                font-size: 20px;
+            }
+            #youtubePlayer {
+                height: 250px;
+            }
+        }
+        @media (orientation: landscape) {
+            #youtubePlayer {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Google Drive Media Player</h1>
-  <div id="msg">Loading Playlist...</div>
-  <audio controls id="audio-player" src="" type="audio/mpeg"></audio><br />
-  <div id="status"></div>
-  <div>
-    <input type="button" id="prevbtn" value="Previous" onClick="playPrevious()" disabled />
-    <input type="button" id="nextbtn" value="Next" onClick="playNext()" disabled />
-    <input type="button" id="pausebtn" value="Pause" onClick="pauseAudio()" disabled />
-  </div>
-  <div id="cntrls"></div>
-  <h2>Available Media Files</h2>
-  <select id="file-list" onchange="selectFile()">
-    <option value="">Select a file</option>
-  </select>
-  <script>
-    var selectionList = [];
-    var gVolume = 0.2;
-    var index = 0;
-
-    function listFiles() {
-      google.script.run.withSuccessHandler(displayFiles).getFiles();
-    }
-
-    function displayFiles(files) {
-      const fileList = document.getElementById('file-list');
-      fileList.innerHTML = '<option value="">Select a file</option>'; // Reset the dropdown
-      if (files.length > 0) {
-        files.forEach(file => {
-          selectionList.push(file); // Store the entire file object
-          const option = document.createElement('option');
-          option.value = file.name; // Use file name as the value
-          option.textContent = file.name; // Display file name in the dropdown
-          fileList.appendChild(option);
-        });
-      } else {
-        fileList.innerHTML = '<option value="">No files found.</option>';
-      }
-    }
-
-    function selectFile() {
-      const fileList = document.getElementById('file-list');
-      const selectedFileName = fileList.value;
-      const selectedFile = selectionList.find(file => file.name === selectedFileName);
-      if (selectedFile) {
-        playFile(selectedFile);
-      }
-    }
-
-    function playFile(file) {
-      if (!file || !file.id) {
-        console.error('File or File ID is missing');
-        return;
-      }
-      google.script.run.withSuccessHandler(function(fObj) {
-        const audioPlayer = document.getElementById('audio-player');
-        audioPlayer.src = fObj.uri; // Assuming fObj.uri contains the audio URL
-        audioPlayer.volume = gVolume;
-        audioPlayer.play().catch(error => {
-          console.error('Error playing audio:', error);
-          alert('Could not play audio: ' + error.message);
-        });
-
-        audioPlayer.onended = function() {
-          document.getElementById('status').innerHTML = 'Ended...';
-          playNext(); // Call playNext to load the next file
-        };
-        
-        audioPlayer.onplay = function() {
-          document.getElementById('msg').innerHTML = 'Playing: ' + file.name;
-          document.getElementById('status').innerHTML = 'Playing...';
-          document.getElementById('prevbtn').disabled = false;
-          document.getElementById('nextbtn').disabled = false;
-          document.getElementById('pausebtn').disabled = false;
-        };
-        
-        index++;
-      }).convMediaToDataUri(file.name); // Pass the file ID to the server-side function
-    }
-
-    function playNext() {
-      if (index < selectionList.length) {
-        document.getElementById('status').innerHTML = 'Loading...';
-        document.getElementById('msg').innerHTML = 'Next Selection: ' + selectionList[index].name;
-        google.script.run.withSuccessHandler(function(fObj) {
-          $('#audio-player').attr('src', fObj.uri);
-          var audio = document.getElementById('audio-player');
-          audio.volume = gVolume;
-          audio.play();
-        }).convMediaToDataUri(selectionList[index++].name);
-      } else {
-        document.getElementById('status').innerHTML = 'Playlist Complete';
-        document.getElementById('msg').innerHTML = '';
-      }
-    }
-
-    function playPrevious() {
-      if (index > 1) {
-        index -= 2; // Decrement index by 2 to go back to the previous file
-        playNext(); // Play the previous file
-      }
-    }
-
-    function pauseAudio() {
-      var audio = document.getElementById('audio-player');
-      audio.pause();
-    }
-
-    function replayPlaylist() {
-      index = 0;
-      document.getElementById('cntrls').innerHTML = '';
-      playNext();
-    }
-
-    // Load the files when the page loads
-    window.onload = listFiles;
-  </script>
+    <h1>My YouTube Player</h1>
+    <div id="form-container">
+        <form onsubmit="loadVideo(event)">
+            <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL" required>
+        </form>
+        <div class="controls">
+            <button type="submit" id="playPauseButton" class="icon-button" onclick="togglePlayPause(); return false;" disabled>
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="icon-button" onclick="toggleMode('audio')">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="icon-button" onclick="toggleMode('video')">
+                <i class="fas fa-video"></i>
+            </button>
+            <button id="repeatButton" class="icon-button" onclick="toggleRepeat();">
+                <i class="fas fa-redo"></i> <!-- Default icon for repeat off -->
+            </button>
+        </div>
+    </div>
+    <div id="youtubePlayer"></div>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
