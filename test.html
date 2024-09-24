@@ -1,13 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Play Audio from Google Drive</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, 
+        user-scalable=no, 
+        maximum-scale=1, 
+        minimum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Responsive Media Player</title>
+    <style>
+        /* Base styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column; /* Change to column */
+            align-items: center; /* Center horizontally */
+            height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .media-player-container {
+            width: 90%;  /* Responsive width */
+            max-width: 600px; /* Maximum width for larger screens */
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px; /* Add space from the top */
+        }
+
+        video, audio {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .media-player-container {
+                padding: 15px; /* Smaller padding for mobile */
+            }
+
+            video, audio {
+                height: auto; /* Maintain aspect ratio */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .media-player-container {
+                padding: 10px; /* Even smaller padding for very small screens */
+            }
+        }
+    </style>
 </head>
 <body>
-  <h3>Audio from Google Drive</h3>
-  <audio controls>
-    <source src="https://drive.google.com/uc?export=download&id=1nI-umchulYvaa5D3xynV3IjPPUw7TAc1" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+    <div class="media-player-container">
+        <h2>Media Player</h2>
+        <video controls>
+            <source src="sample-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <audio controls>
+            <source src="sample-audio.mp3" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <script>
+        // Prevent zooming on desktop by capturing keydown events (Ctrl + or Cmd +)
+        document.addEventListener('keydown', function(event) {
+            // Prevent zoom for Ctrl + or Cmd + (Shift + = and = keys)
+            if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '+' || (event.shiftKey && event.key === '='))) {
+                event.preventDefault();
+            }
+
+            // Prevent zoom for Ctrl - or Cmd - or Ctrl + Shift -
+            if ((event.ctrlKey || event.metaKey) && (event.key === '-' || (event.shiftKey && event.key === '-'))) {
+                event.preventDefault();
+            }
+        });
+
+        // Prevent zooming with mousewheel (desktop browsers) using a non-passive listener
+        document.addEventListener('wheel', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent pinch zoom on touch devices
+        document.addEventListener('touchmove', function(event) {
+            if (event.scale !== 1) { // Prevent zoom gesture
+                event.preventDefault();
+            }
+        }, { passive: false });
+    </script>
 </body>
 </html>

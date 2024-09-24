@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My YouTube Player</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
-    <link rel="manifest" href="https://drive.google.com/uc?export=download&id=1G64IN-bowqg-pVXQAfgGwnQuQ5-Xqv8g">
+    <link rel="manifest" href="https://1drv.ms/u/s!AipyNFddwJ-nhOgm2WGL98r1-bLZMA">
     <style>
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
-            width: 100%;
-            max-width: 800px;
-            background: url('https://mrwallpaper.com/images/hd/dance-battle-hip-hop-art-mre3ofjjxfn4g9ou.jpg') no-repeat center center fixed;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center horizontally */
+            height: 100vh; /* Full height */
+            justify-content: flex-start; /* Align to the top */
+            background: url('https://phx02pap008files.storage.live.com/y4mW3qGgFCfrT5zRKGGCnXYmXnjn8Xu-1-9brN1EsMbQspFut2XlT7lWtuZqzFXvHw-DbGFGsoe3LhaWhHQVSctPxRgiFJQGq_AzJ73kVyx1fPnnduavU3T0vcS6U9hdE-DHK3ROO9jGKtpcZZuY2zmmmtTluq9HDitXYQ7bD0QQpBRxp7bruww7CJqzEGEQN_e4_6-_BtXsqNxpmdU5CrF2oc6R3P-2jkVyRDX-r_1wvc?encodeFailures=1&width=1301&height=803') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Arial', sans-serif;
             color: #ffffff;
             text-align: center;
             overflow-x: hidden;
-            font-size: 16px;
         }
         h1 {
             font-family: 'Impact', sans-serif;
@@ -28,17 +29,18 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
         #form-container {
-            margin: 0 auto 20px;
+            margin: 20px 0; /* Add some space from the title */
             padding: 20px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             width: 90%;
+            max-width: 600px; /* Max width for larger screens */
         }
         #youtubePlayer {
             width: 90%;
             height: 250px;
-            margin: 0 auto;
+            margin: 20px 0; /* Add some space from the form container */
             transition: width 0.3s, height 0.3s;
             border-radius: 12px;
             overflow: hidden;
@@ -208,6 +210,33 @@
             document.getElementById('videoModeButton').addEventListener('click', () => toggleMode('video'));
             document.getElementById(ELEMENT_IDS.REPEAT_BUTTON).addEventListener('click', toggleRepeat);
             document.getElementById(ELEMENT_IDS.YOUTUBE_URL).addEventListener('input', checkInput);
+
+            // Prevent zooming on desktop by capturing keydown events (Ctrl + or Cmd +)
+            document.addEventListener('keydown', function(event) {
+                // Prevent zoom for Ctrl + or Cmd + (Shift + = and = keys)
+                if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '+' || (event.shiftKey && event.key === '='))) {
+                    event.preventDefault();
+                }
+
+                // Prevent zoom for Ctrl - or Cmd - or Ctrl + Shift -
+                if ((event.ctrlKey || event.metaKey) && (event.key === '-' || (event.shiftKey && event.key === '-'))) {
+                    event.preventDefault();
+                }
+            });
+
+            // Prevent zooming with mousewheel (desktop browsers) using a non-passive listener
+            document.addEventListener('wheel', function(event) {
+                if (event.ctrlKey || event.metaKey) {
+                    event.preventDefault();
+                }
+            }, { passive: false });
+
+            // Prevent pinch zoom on touch devices
+            document.addEventListener('touchmove', function(event) {
+                if (event.scale !== 1) { // Prevent zoom gesture
+                    event.preventDefault();
+                }
+            }, { passive: false });
         }
 
         window.onload = () => {
