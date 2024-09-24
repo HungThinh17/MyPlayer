@@ -2,15 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My YouTube Player</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="manifest" href="https://drive.google.com/uc?export=download&id=1G64IN-bowqg-pVXQAfgGwnQuQ5-Xqv8g">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            max-width: 800px;
+            background: url('https://mrwallpaper.com/images/hd/dance-battle-hip-hop-art-mre3ofjjxfn4g9ou.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+            text-align: center;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+        h1 {
+            font-family: 'Impact', sans-serif;
+            font-size: 32px;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        #form-container {
+            margin: 0 auto 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            width: 90%;
+        }
+        #youtubePlayer {
+            width: 90%;
+            height: 250px;
+            margin: 0 auto;
+            transition: width 0.3s, height 0.3s;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        input[type="text"] {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            box-sizing: border-box;
+        }
+        .icon-button {
+            display: inline-block;
+            padding: 15px;
+            margin: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 24px;
+            transition: background 0.3s;
+        }
+        .icon-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .controls {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>My YouTube Player</h1>
+    <div id="form-container">
+        <form id="videoForm">
+            <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL" required>
+        </form>
+        <div class="controls">
+            <button type="button" id="playPauseButton" class="icon-button" disabled>
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="icon-button" id="audioModeButton">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="icon-button" id="videoModeButton">
+                <i class="fas fa-video"></i>
+            </button>
+            <button id="repeatButton" class="icon-button">
+                <i class="fas fa-redo"></i>
+            </button>
+        </div>
+    </div>
+    <div id="youtubePlayer"></div>
+
     <script>
+        const ELEMENT_IDS = {
+            YOUTUBE_PLAYER: 'youtubePlayer',
+            YOUTUBE_URL: 'youtubeUrl',
+            PLAY_PAUSE_BUTTON: 'playPauseButton',
+            REPEAT_BUTTON: 'repeatButton',
+            VIDEO_FORM: 'videoForm'
+        };
+
         let player;
-        let repeat = false; // Repeat is off by default
+        let repeat = false;
 
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtubePlayer', {
+            player = new YT.Player(ELEMENT_IDS.YOUTUBE_PLAYER, {
                 playerVars: {
                     autoplay: 1,
                     controls: 1,
@@ -39,11 +142,16 @@
 
         function loadVideo(event) {
             event.preventDefault();
-            const url = document.getElementById('youtubeUrl').value.trim(); // Trim whitespace
+            const url = document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value.trim();
             const videoId = extractVideoId(url);
             if (videoId) {
-                player.loadVideoById(videoId);
-                player.playVideo();
+                try {
+                    player.loadVideoById(videoId);
+                    player.playVideo();
+                } catch (error) {
+                    console.error('Error loading video:', error);
+                    alert('An error occurred while loading the video. Please try again.');
+                }
             } else {
                 alert('Invalid YouTube URL');
             }
@@ -56,171 +164,63 @@
                 playerElement.style.height = "0";
             } else {
                 playerElement.style.width = "100%";
-                playerElement.style.height = "450px";
+                playerElement.style.height = "200px";
             }
         }
 
         function togglePlayPause() {
-            const state = player.getPlayerState();
-            const url = document.getElementById('youtubeUrl').value.trim(); // Trim whitespace
+            const url = document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value.trim();
             if (url === '') {
-                alert('Please enter a YouTube URL to play or pause.'); // Alert if the URL is empty
-                return; // Prevent play/pause action
+                alert('Please enter a YouTube URL to play or pause.');
+                return;
             }
-            if (state === YT.PlayerState.PLAYING) {
-                player.pauseVideo();
-                document.getElementById('playPauseButton').innerHTML = '<i class="fas fa-play"></i>';
-            } else {
-                player.playVideo();
-                document.getElementById('playPauseButton').innerHTML = '<i class="fas fa-pause"></i>';
+            try {
+                const state = player.getPlayerState();
+                if (state === YT.PlayerState.PLAYING) {
+                    player.pauseVideo();
+                    document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON).innerHTML = '<i class="fas fa-play"></i>';
+                } else {
+                    player.playVideo();
+                    document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON).innerHTML = '<i class="fas fa-pause"></i>';
+                }
+            } catch (error) {
+                console.error('Error toggling play/pause:', error);
+                alert('An error occurred. Please try again.');
             }
         }
 
         function toggleRepeat() {
-            repeat = !repeat; // Toggle repeat state
-            const repeatButton = document.getElementById('repeatButton');
-
-            // Change icon based on repeat state
-            if (repeat) {
-                repeatButton.innerHTML = '<i class="fas fa-sync-alt"></i>'; // Change icon to indicate repeat is on
-            } else {
-                repeatButton.innerHTML = '<i class="fas fa-redo"></i>'; // Change icon to indicate repeat is off
-            }
+            repeat = !repeat;
+            const repeatButton = document.getElementById(ELEMENT_IDS.REPEAT_BUTTON);
+            repeatButton.innerHTML = repeat ? '<i class="fas fa-sync-alt"></i>' : '<i class="fas fa-redo"></i>';
         }
 
         function checkInput() {
-            const url = document.getElementById('youtubeUrl').value.trim();
-            const playPauseButton = document.getElementById('playPauseButton');
-            if (url === '') {
-                playPauseButton.disabled = true; // Disable play button if input is empty
-            } else {
-                playPauseButton.disabled = false; // Enable play button if input is not empty
-            }
+            const url = document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value.trim();
+            const playPauseButton = document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON);
+            playPauseButton.disabled = url === '';
+        }
+
+        function initializeEventListeners() {
+            document.getElementById(ELEMENT_IDS.VIDEO_FORM).addEventListener('submit', loadVideo);
+            document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON).addEventListener('click', togglePlayPause);
+            document.getElementById('audioModeButton').addEventListener('click', () => toggleMode('audio'));
+            document.getElementById('videoModeButton').addEventListener('click', () => toggleMode('video'));
+            document.getElementById(ELEMENT_IDS.REPEAT_BUTTON).addEventListener('click', toggleRepeat);
+            document.getElementById(ELEMENT_IDS.YOUTUBE_URL).addEventListener('input', checkInput);
         }
 
         window.onload = () => {
             toggleMode('audio');
-            checkInput(); // Initial check to disable button if needed
-            document.getElementById('youtubeUrl').addEventListener('input', checkInput); // Add event listener for input changes
+            checkInput();
+            initializeEventListeners();
         };
+
+        // Lazy load YouTube IFrame API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            background: url('https://mrwallpaper.com/images/hd/dance-battle-hip-hop-art-mre3ofjjxfn4g9ou.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Arial', sans-serif;
-            color: #7d7d7d;
-            text-align: center;
-            overflow-x: hidden;
-        }
-        h1 {
-            font-family: 'Impact', sans-serif;
-            font-size: 48px;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-        #form-container {
-            margin-bottom: 20px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 500px;
-        }
-        #youtubePlayer {
-            width: 100%;
-            height: auto;
-            max-width: 1000px;
-            transition: width 0.3s, height 0.3s;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-        input[type="text"] {
-            width: calc(100% - 130px);
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            margin-right: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-        }
-        .icon-button {
-            padding: 10px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background: transparent;
-            color: white;
-            font-size: 24px;
-            transition: background 0.3s;
-        }
-        .icon-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 32px;
-            }
-            #form-container {
-                width: 95%;
-            }
-            input[type="text"] {
-                width: calc(100% - 80px);
-            }
-            .icon-button {
-                font-size: 20px;
-            }
-            #youtubePlayer {
-                height: 250px;
-            }
-        }
-        @media (orientation: landscape) {
-            #youtubePlayer {
-                height: 300px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <h1>My YouTube Player</h1>
-    <div id="form-container">
-        <form onsubmit="loadVideo(event)">
-            <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL" required>
-        </form>
-        <div class="controls">
-            <button type="submit" id="playPauseButton" class="icon-button" onclick="togglePlayPause(); return false;" disabled>
-                <i class="fas fa-play"></i>
-            </button>
-            <button class="icon-button" onclick="toggleMode('audio')">
-                <i class="fas fa-volume-up"></i>
-            </button>
-            <button class="icon-button" onclick="toggleMode('video')">
-                <i class="fas fa-video"></i>
-            </button>
-            <button id="repeatButton" class="icon-button" onclick="toggleRepeat();">
-                <i class="fas fa-redo"></i> <!-- Default icon for repeat off -->
-            </button>
-        </div>
-    </div>
-    <div id="youtubePlayer"></div>
-    <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
