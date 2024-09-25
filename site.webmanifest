@@ -14,11 +14,12 @@
     }
   ],
   "share_target": {
-      "action": "/MyPlayer/",
-      "params": {
-          "title": "title",
-          "text": "text",
-          "url": "url"
-      }
-  }
+    "action": "/MyPlayer/",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "offline_enabled": true
 }
