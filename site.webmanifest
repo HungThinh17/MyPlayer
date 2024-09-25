@@ -12,13 +12,5 @@
       "sizes": "192x192",
       "type": "image/png"
     }
-  ],
-  "share_target": {
-      "action": "/",
-      "params": {
-          "title": "title",
-          "text": "text",
-          "url": "url"
-      }
-  }
+  ]
 }
