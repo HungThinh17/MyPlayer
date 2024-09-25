@@ -6,7 +6,7 @@
     "background_color": "#ffffff",
     "icons": [
       {
-        "src": "https://www.freeiconspng.com/thumbs/recording-icon/record-player-icon-32.jpg",
+        "src": "/resources/icon.png",
         "sizes": "192x192",
         "type": "image/png"
       }
