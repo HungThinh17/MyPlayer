@@ -249,24 +249,17 @@ window.onload = () => {
   handleSharedLink();
 };
 
-// Prevent stopping video on window blur
-window.addEventListener('blur', function() {
-  // You can add any logic here if needed
-  if (player && isPlaying) {
-      player.playVideo();
-  }
-});
-
-window.addEventListener('focus', function() {
-  // Logic for when the window regains focus (if needed)
-  if (player && isPlaying) {
-      player.playVideo();
-  }
-});
-
-// Stop video playback when leaving the page
-window.addEventListener('beforeunload', function() {
+window.addEventListener('unload', function() {
   if (player) {
-      player.stopVideo(); // Stop the video
+      player.stoopVideo();
+  }
+});
+
+// Manage video playback when the tab visibility changes
+document.addEventListener('visibilitychange', function() {
+  if (player && isPlaying) {
+      // Optionally resume playback if the tab is visible
+      player.unMute();
+      player.playVideo();
   }
 });
