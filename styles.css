@@ -8,7 +8,12 @@ html {
     height: 100vh;
     justify-content: flex-start;
     background: url('./resources/hiphopbackground.jpeg') no-repeat center center fixed;
-    background-size: cover;
+    background-size: cover;        /* Make the background image cover the entire area */
+    background-position: center;   /* Center the image */
+    background-repeat: no-repeat;  /* Prevent the image from repeating */
+    background-attachment: fixed;  /* Optional: Keeps the background fixed while scrolling */
+    height: 100vh;                 /* Make sure the body takes up the full viewport height */
+    margin: 0;                     /* Remove default margin */
     font-family: 'Arial', sans-serif;
     color: #084126;
     text-align: center;
