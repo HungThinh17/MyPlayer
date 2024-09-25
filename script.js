@@ -222,10 +222,25 @@ function cleanInvalidFavorites() {
     displayFavorites();
 }
 
+// Function to get URL parameters
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('sharedLink');
+}
+
+function handleSharedLink() {
+  const sharedLink = getQueryParams();
+    if (sharedLink) {
+        document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value = sharedLink;
+        loadVideo(new Event('submit'));
+    }
+}
+
 window.onload = () => {
     toggleMode('audio');
     checkInput();
     initializeEventListeners();
     cleanInvalidFavorites();
     displayFavorites();
+    handleSharedLink();
 };
