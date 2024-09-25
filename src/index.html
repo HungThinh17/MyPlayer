@@ -1,51 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My YouTube Player</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
-    <link rel="manifest" href="https://1drv.ms/u/s!AipyNFddwJ-nhOgm2WGL98r1-bLZMA">
+    <link rel="manifest" href="https://www.googleapis.com/drive/v3/files/19vLfF6ev4fut9QHapLwLyr3nL50JwCzD?alt=media&key=AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI">
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column; /* Stack elements vertically */
-            align-items: center; /* Center horizontally */
-            height: 100vh; /* Full height */
-            justify-content: flex-start; /* Align to the top */
+            flex-direction: column;
+            /* Stack elements vertically */
+            align-items: center;
+            /* Center horizontally */
+            height: 100vh;
+            /* Full height */
+            justify-content: flex-start;
+            /* Align to the top */
             background: url('https://phx02pap008files.storage.live.com/y4mW3qGgFCfrT5zRKGGCnXYmXnjn8Xu-1-9brN1EsMbQspFut2XlT7lWtuZqzFXvHw-DbGFGsoe3LhaWhHQVSctPxRgiFJQGq_AzJ73kVyx1fPnnduavU3T0vcS6U9hdE-DHK3ROO9jGKtpcZZuY2zmmmtTluq9HDitXYQ7bD0QQpBRxp7bruww7CJqzEGEQN_e4_6-_BtXsqNxpmdU5CrF2oc6R3P-2jkVyRDX-r_1wvc?encodeFailures=1&width=1301&height=803') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Arial', sans-serif;
-            color: #ffffff;
+            color: #084126;
+            /* Strong green color */
             text-align: center;
             overflow-x: hidden;
         }
+
         h1 {
             font-family: 'Impact', sans-serif;
             font-size: 32px;
             margin: 20px 0;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            color: #ff9100;
+            /* Strong green color for the title */
         }
+
         #form-container {
-            margin: 20px 0; /* Add some space from the title */
+            margin: 20px 0;
+            /* Add some space from the title */
             padding: 20px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             width: 90%;
-            max-width: 600px; /* Max width for larger screens */
+            max-width: 600px;
+            /* Max width for larger screens */
         }
+
         #youtubePlayer {
             width: 90%;
             height: 250px;
-            margin: 20px 0; /* Add some space from the form container */
+            margin: 20px 0;
+            /* Add some space from the form container */
             transition: width 0.3s, height 0.3s;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
+
         input[type="text"] {
             display: block;
             width: 100%;
@@ -56,9 +72,11 @@
             margin-bottom: 15px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             background: rgba(255, 255, 255, 0.9);
-            color: #333;
+            color: #000000;
+            /* Strong green color for input text */
             box-sizing: border-box;
         }
+
         .icon-button {
             display: inline-block;
             padding: 15px;
@@ -67,18 +85,27 @@
             border-radius: 8px;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.2);
-            color: white;
+            color: #ffffff;
+            /* Strong green color for icon buttons */
             font-size: 24px;
             transition: background 0.3s;
         }
+
         .icon-button:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+
         .controls {
             margin-top: 15px;
         }
+
+        #favoriteList li {
+            color: #084126;
+            /* Strong green color for favorite list items */
+        }
     </style>
 </head>
+
 <body>
     <h1>My YouTube Player</h1>
     <div id="form-container">
@@ -89,30 +116,37 @@
             <button type="button" id="playPauseButton" class="icon-button" disabled>
                 <i class="fas fa-play"></i>
             </button>
-            <button class="icon-button" id="audioModeButton">
-                <i class="fas fa-volume-up"></i>
-            </button>
-            <button class="icon-button" id="videoModeButton">
+            <button class="icon-button" id="audioVideoToggleButton">
                 <i class="fas fa-video"></i>
             </button>
             <button id="repeatButton" class="icon-button">
                 <i class="fas fa-redo"></i>
             </button>
-        </div>
+            <button class="icon-button" id="favoriteButton">
+                <i class="far fa-star"></i>
+            </button>
+        </div>        
     </div>
     <div id="youtubePlayer"></div>
-
+    <div id="favoriteListContainer" style="display: none;">
+        <h2>Favorites</h2>
+        <ul id="favoriteList"></ul>
+    </div>
     <script>
         const ELEMENT_IDS = {
             YOUTUBE_PLAYER: 'youtubePlayer',
             YOUTUBE_URL: 'youtubeUrl',
             PLAY_PAUSE_BUTTON: 'playPauseButton',
             REPEAT_BUTTON: 'repeatButton',
-            VIDEO_FORM: 'videoForm'
+            VIDEO_FORM: 'videoForm',
+            FAVORITE_BUTTON: 'favoriteButton',
+            FAVORITE_LIST: 'favoriteList',
+            FAVORITE_LIST_CONTAINER: 'favoriteListContainer'
         };
 
         let player;
         let repeat = false;
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player(ELEMENT_IDS.YOUTUBE_PLAYER, {
@@ -150,8 +184,9 @@
                 try {
                     player.loadVideoById(videoId);
                     player.playVideo();
+                    // Update play/pause button status
+                    document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON).innerHTML = '<i class="fas fa-pause"></i>';
                 } catch (error) {
-                    console.error('Error loading video:', error);
                     alert('An error occurred while loading the video. Please try again.');
                 }
             } else {
@@ -186,7 +221,6 @@
                     document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON).innerHTML = '<i class="fas fa-pause"></i>';
                 }
             } catch (error) {
-                console.error('Error toggling play/pause:', error);
                 alert('An error occurred. Please try again.');
             }
         }
@@ -203,16 +237,93 @@
             playPauseButton.disabled = url === '';
         }
 
+        function addToFavorites(videoId) {
+            fetch("https://www.googleapis.com/youtube/v3/videos?part=snippet&id="+videoId+"&key=AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.items && data.items.length > 0) {
+                        const title = data.items[0].snippet.title;
+                        if (title && title.trim() !== '') {
+                            favorites.push({ id: videoId, title: title });
+                            localStorage.setItem('favorites', JSON.stringify(favorites));
+                            displayFavorites();
+                            document.getElementById(ELEMENT_IDS.FAVORITE_BUTTON).innerHTML = '<i class="fas fa-star"></i>';
+                        } else {
+                            alert('Unable to add to favorites: Invalid video title');
+                        }
+                    } else {
+                        alert('Unable to add to favorites: Invalid video');
+                    }
+                })
+                .catch(error => {
+                    alert('Unable to add to favorites: Error fetching video details');
+                });
+        }
+
+        function toggleFavorite() {
+            const url = document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value.trim();
+            if (url) {
+                const videoId = extractVideoId(url);
+                if (videoId) {
+                    const index = favorites.findIndex(fav => fav.id === videoId);
+                    if (index > -1) {
+                        favorites.splice(index, 1);
+                        document.getElementById(ELEMENT_IDS.FAVORITE_BUTTON).innerHTML = '<i class="far fa-star"></i>';
+                    } else {
+                        addToFavorites(videoId);
+                        document.getElementById(ELEMENT_IDS.FAVORITE_BUTTON).innerHTML = '<i class="fas fa-star"></i>';
+                    }
+                    localStorage.setItem('favorites', JSON.stringify(favorites));
+                    displayFavorites();
+                }
+            }
+        }
+
+        function displayFavorites() {
+            const favoriteList = document.getElementById(ELEMENT_IDS.FAVORITE_LIST);
+            favoriteList.innerHTML = '';
+            favorites.forEach(fav => {
+                const li = document.createElement('li');
+                li.textContent = fav.title;
+                li.onclick = () => {
+                    document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value = "https://www.youtube.com/watch?v="+fav.id;
+                    loadVideo(new Event('submit'));
+                };
+                favoriteList.appendChild(li);
+            });
+
+            const container = document.getElementById(ELEMENT_IDS.FAVORITE_LIST_CONTAINER);
+            container.style.display = favorites.length > 0 ? 'block' : 'none';
+        }
+
+        let isVideoMode = true;
+
+        function toggleAudioVideoMode() {
+            isVideoMode = !isVideoMode;
+            const playerElement = document.getElementById('youtubePlayer');
+            const toggleButton = document.getElementById('audioVideoToggleButton');
+
+            if (isVideoMode) {
+                playerElement.style.width = "100%";
+                playerElement.style.height = "200px";
+                toggleButton.innerHTML = '<i class="fas fa-video"></i>';
+            } else {
+                playerElement.style.width = "0";
+                playerElement.style.height = "0";
+                toggleButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+        }
+
         function initializeEventListeners() {
             document.getElementById(ELEMENT_IDS.VIDEO_FORM).addEventListener('submit', loadVideo);
             document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON).addEventListener('click', togglePlayPause);
-            document.getElementById('audioModeButton').addEventListener('click', () => toggleMode('audio'));
-            document.getElementById('videoModeButton').addEventListener('click', () => toggleMode('video'));
             document.getElementById(ELEMENT_IDS.REPEAT_BUTTON).addEventListener('click', toggleRepeat);
             document.getElementById(ELEMENT_IDS.YOUTUBE_URL).addEventListener('input', checkInput);
+            document.getElementById(ELEMENT_IDS.FAVORITE_BUTTON).addEventListener('click', toggleFavorite);
+            document.getElementById('audioVideoToggleButton').addEventListener('click', toggleAudioVideoMode);
 
             // Prevent zooming on desktop by capturing keydown events (Ctrl + or Cmd +)
-            document.addEventListener('keydown', function(event) {
+            document.addEventListener('keydown', function (event) {
                 // Prevent zoom for Ctrl + or Cmd + (Shift + = and = keys)
                 if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '+' || (event.shiftKey && event.key === '='))) {
                     event.preventDefault();
@@ -225,24 +336,36 @@
             });
 
             // Prevent zooming with mousewheel (desktop browsers) using a non-passive listener
-            document.addEventListener('wheel', function(event) {
+            document.addEventListener('wheel', function (event) {
                 if (event.ctrlKey || event.metaKey) {
                     event.preventDefault();
                 }
             }, { passive: false });
 
             // Prevent pinch zoom on touch devices
-            document.addEventListener('touchmove', function(event) {
+            document.addEventListener('touchmove', function (event) {
                 if (event.scale !== 1) { // Prevent zoom gesture
                     event.preventDefault();
                 }
             }, { passive: false });
         }
 
+        function cleanInvalidFavorites() {
+            favorites = favorites.filter(fav => {
+                const videoId = extractVideoId("https://www.youtube.com/watch?v="+fav.id);
+                return videoId !== null;
+            });
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            displayFavorites();
+        }
+
+        // Call this function when loading the page or before displaying favorites
         window.onload = () => {
             toggleMode('audio');
             checkInput();
             initializeEventListeners();
+            cleanInvalidFavorites();
+            displayFavorites();
         };
 
         // Lazy load YouTube IFrame API
@@ -252,4 +375,5 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
 </body>
+
 </html>
