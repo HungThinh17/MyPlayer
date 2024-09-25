@@ -25,9 +25,15 @@ function onYouTubeIframeAPIReady() {
             rel: 0
         },
         events: {
-            'onStateChange': onPlayerStateChange
+            'onStateChange': onPlayerStateChange,
+            'onReady': onPlayerReady
         }
     });
+}
+
+function onPlayerReady(event) {
+    event.target.unMute();
+    event.target.playVideo();
 }
 
 function onPlayerStateChange(event) {
