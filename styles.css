@@ -20,12 +20,6 @@ html {
     overflow-x: hidden;
 }
 
-@media (max-width: 768px) {
-    body {
-        background-image: url('./resources/hiphopbackground_1.jpeg'); /* Background image for mobile devices */
-    }
-}
-
 h1 {
     font-family: 'Impact', sans-serif;
     font-size: 32px;
@@ -77,7 +71,7 @@ input[type="text"] {
     cursor: pointer;
     background: rgba(255, 255, 255, 0.2);
     color: #ffffff;
-    font-size: 24px;
+    font-size: 16px;
     transition: background 0.3s;
 }
 

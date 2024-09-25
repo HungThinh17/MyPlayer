@@ -7,7 +7,8 @@ const ELEMENT_IDS = {
   FAVORITE_BUTTON: 'favoriteButton',
   FAVORITE_LIST: 'favoriteList',
   FAVORITE_LIST_CONTAINER: 'favoriteListContainer',
-  AUDIO_VIDEO_TOGGLE_BUTTON: 'audioVideoToggleButton'
+  AUDIO_VIDEO_TOGGLE_BUTTON: 'audioVideoToggleButton',
+  PASTE_CLEAN_URL: 'pasteOrClearButton'
 };
 
 let player;
@@ -188,6 +189,27 @@ function toggleAudioVideoMode() {
   }
 }
 
+function handlePasteOrClear() {
+  const urlInput = document.getElementById(ELEMENT_IDS.YOUTUBE_URL);
+  const pasteOrClearButton = document.getElementById(ELEMENT_IDS.PASTE_CLEAN_URL);
+
+  if (urlInput.value.trim() === '') {
+      // If the input is empty, paste from clipboard
+      navigator.clipboard.readText().then(text => {
+          urlInput.value = text;
+          pasteOrClearButton.innerHTML = '<i class="fas fa-times"></i>';
+          checkInput();
+      }).catch(err => {
+          console.error('Failed to read clipboard contents: ', err);
+      });
+  } else {
+      // If the input has content, clear it
+      urlInput.value = '';
+      pasteOrClearButton.innerHTML = '<i class="fas fa-paste"></i>';
+      checkInput();
+  }
+}
+
 function initializeEventListeners() {
   document.getElementById(ELEMENT_IDS.VIDEO_FORM).addEventListener('submit', loadVideo);
   document.getElementById(ELEMENT_IDS.PLAY_PAUSE_BUTTON).addEventListener('click', togglePlayPause);
@@ -195,6 +217,7 @@ function initializeEventListeners() {
   document.getElementById(ELEMENT_IDS.YOUTUBE_URL).addEventListener('input', checkInput);
   document.getElementById(ELEMENT_IDS.FAVORITE_BUTTON).addEventListener('click', toggleFavorite);
   document.getElementById(ELEMENT_IDS.AUDIO_VIDEO_TOGGLE_BUTTON).addEventListener('click', toggleAudioVideoMode);
+  document.getElementById(ELEMENT_IDS.PASTE_CLEAN_URL).addEventListener('click', handlePasteOrClear);
 
   document.addEventListener('keydown', function (event) {
       if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '+' || (event.shiftKey && event.key === '='))) {
