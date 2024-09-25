@@ -1,7 +1,7 @@
 {
   "name": "My Custom Player",
   "short_name": "MyPlayer",
-  "start_url": "/?url=",
+  "start_url": "MyPlayer/?url=",
   "scope": "/",
   "display": "standalone",
   "theme_color": "#ffffff",
