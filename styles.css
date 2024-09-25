@@ -7,7 +7,7 @@ html {
     align-items: center;
     height: 100vh;
     justify-content: flex-start;
-    background: url('/resources/hiphopbackground.jpeg') no-repeat center center fixed;
+    background: url('./resources/hiphopbackground.jpeg') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Arial', sans-serif;
     color: #084126;
@@ -17,7 +17,7 @@ html {
 
 @media (max-width: 768px) {
     body {
-        background-image: url('/resources/hiphopbackground_1.jpeg'); /* Background image for mobile devices */
+        background-image: url('./resources/hiphopbackground_1.jpeg'); /* Background image for mobile devices */
     }
 }
 
