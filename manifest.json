@@ -1,7 +1,6 @@
 {
-    "name": "My Google Apps Script Web App",
-    "short_name": "WebApp",
-    "start_url": "https://script.google.com/macros/s/AKfycbztoEdvBcFaZ5YclwpoXtx46J810wRFzOGJbpa4tPjIYj8A6E9m0bBkRj_d5Zst66gebA/exec",
+    "name": "My Custom Player",
+    "short_name": "MyPlayer",
     "display": "standalone",
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
