@@ -251,7 +251,7 @@ window.onload = () => {
 
 window.addEventListener('unload', function() {
   if (player) {
-      player.stoopVideo();
+      player.stopVideo();
   }
 });
 

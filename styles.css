@@ -7,12 +7,18 @@ html {
     align-items: center;
     height: 100vh;
     justify-content: flex-start;
-    background: url('https://phx02pap008files.storage.live.com/y4mW3qGgFCfrT5zRKGGCnXYmXnjn8Xu-1-9brN1EsMbQspFut2XlT7lWtuZqzFXvHw-DbGFGsoe3LhaWhHQVSctPxRgiFJQGq_AzJ73kVyx1fPnnduavU3T0vcS6U9hdE-DHK3ROO9jGKtpcZZuY2zmmmtTluq9HDitXYQ7bD0QQpBRxp7bruww7CJqzEGEQN_e4_6-_BtXsqNxpmdU5CrF2oc6R3P-2jkVyRDX-r_1wvc?encodeFailures=1&width=1301&height=803') no-repeat center center fixed;
+    background: url('/resources/hiphopbackground.jpeg') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Arial', sans-serif;
     color: #084126;
     text-align: center;
     overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+    body {
+        background-image: url('/resources/hiphopbackground_1.jpeg'); /* Background image for mobile devices */
+    }
 }
 
 h1 {
