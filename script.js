@@ -227,16 +227,21 @@ function cleanInvalidFavorites() {
   displayFavorites();
 }
 
+// Function to get URL parameters
 function getQueryParams() {
-const params = new URLSearchParams(window.location.search);
-return params.get('sharedLink');
+  const params = new URLSearchParams(window.location.search);
+  return {
+      url: params.get('url'),
+      title: params.get('title'),
+      text: params.get('text')
+  };
 }
 
 function handleSharedLink() {
-const sharedLink = getQueryParams();
-  if (sharedLink) {
-      document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value = sharedLink;
-      loadVideo(new Event('submit'));
+  const sharedData = getQueryParams();
+  if (sharedData.url) {
+    document.getElementById(ELEMENT_IDS.YOUTUBE_URL).value = sharedData.url;
+    loadVideo(new Event('submit'));
   }
 }
 
