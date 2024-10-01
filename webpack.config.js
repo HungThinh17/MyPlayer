@@ -28,12 +28,12 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './index.html',
+        template: './src/index.html',
       }),
     ],
     devServer: {
       static: {
-        directory: path.join(__dirname, './'),
+        directory: path.join(__dirname, 'dist'),
       },
       compress: true,
       port: 9000,
