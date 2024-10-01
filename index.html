@@ -2,55 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My YouTube Player</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="resources/icon.png">
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>My YouTube Player</h1>
-    <div id="form-container">
-        <form id="videoForm">
-            <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL" required>
-        </form>
-        <div class="controls">
-            <button type="button" id="playPauseButton" class="icon-button" disabled>
-                <i class="fas fa-play"></i>
-            </button>
-            <button class="icon-button" id="audioVideoToggleButton">
-                <i class="fas fa-video"></i>
-            </button>
-            <button id="repeatButton" class="icon-button">
-                <i class="fas fa-redo"></i>
-            </button>
-            <button class="icon-button" id="favoriteButton">
-                <i class="far fa-star"></i>
-            </button>
-            <button class="icon-button" id="pasteOrClearButton" >
-                <i class="fas fa-paste"></i>
-            </button>
-        </div>        
-    </div>
-    <div id="youtubePlayer"></div>
-    <div id="favoriteListContainer" style="display: none;">
-        <h2>Favorites</h2>
-        <ul id="favoriteList"></ul>
-    </div>
-
-    <footer>
-        <p>HungTi - nphung75@gmail.com | <span id="qrCodeTrigger" style="cursor: pointer; text-decoration: underline;">Show QR Code</span></p>
-    </footer>
-    
-    <div id="qrCodeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-        <div style="background-color: white; margin: 15% auto; padding: 20px; width: 300px; text-align: center;">
-            <img id="qrCodeImage" src="resources/download.png" alt="QR Code" style="max-width: 100%;">
-            <button id="closeQrCode">Close</button>
-        </div>
-    </div>
-
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="script.js"></script>
+    <div id="root"></div>
+    <script src="main.js"></script>
 </body>
 </html>

@@ -1,0 +1,165 @@
+.app {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    justify-content: flex-start;
+    background: url('../resources/hiphopbackground.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Arial', sans-serif;
+    color: #084126;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+.title {
+    font-family: 'Impact', sans-serif;
+    font-size: 32px;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    color: #ff9100;
+}
+
+.formContainer {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px;
+}
+
+.videoForm {
+    width: 100%;
+}
+
+.youtubeUrl {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.9);
+    color: #000000;
+    box-sizing: border-box;
+}
+
+.controls {
+    margin-top: 15px;
+}
+
+.iconButton {
+    display: inline-block;
+    padding: 15px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.iconButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.iconButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.youtubePlayer {
+    width: 90%;
+    height: 250px;
+    margin: 20px 0;
+    transition: width 0.3s, height 0.3s;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.favoriteListContainer {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.favoritesTitle {
+    color: #084126;
+    margin-bottom: 10px;
+}
+
+.favoriteList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.favoriteList li {
+    color: #084126;
+    margin-bottom: 5px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    text-align: center;
+}
+
+.qrCodeTrigger {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #084126;
+}
+
+.qrCodeModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qrCodeContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.qrCodeImage {
+    max-width: 100%;
+    margin-bottom: 15px;
+}
+
+.closeQrCode {
+    padding: 10px 20px;
+    background-color: #084126;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.closeQrCode:hover {
+    background-color: #052e1a;
+}
