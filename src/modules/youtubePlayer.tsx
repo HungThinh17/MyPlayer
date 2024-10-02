@@ -5,7 +5,7 @@ import { useYouTubeStore } from '../store/store';
 /// <reference types="youtube" />
 
 export const YouTubePlayer: React.FC = () => {
-    const { videoId, isPlaying, repeat } = useYouTubeStore();
+    const { isVideoMode, videoId, isPlaying, repeat } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
 
     React.useEffect(() => {
@@ -61,6 +61,13 @@ export const YouTubePlayer: React.FC = () => {
             }
         }
     }, [isPlaying]);
+
+    React.useEffect(() => {
+        const player = document.getElementById('youtubePlayer');
+        if (player) {
+            player.style.display = isVideoMode ? 'block' : 'none';
+        }
+    }, [isVideoMode]);
 
     return <div id="youtubePlayer" className={styles.youtubePlayer}></div>;
 };

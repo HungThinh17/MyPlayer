@@ -40,7 +40,7 @@ export const QRCodeModal: React.FC = () => {
     return (
         <div className={styles.qrCodeModal}>
             <div className={styles.qrCodeContent}>
-                <img className={styles.qrCodeImage} src="resources/download.png" alt="QR Code" />
+                <img className={styles.qrCodeImage} src="../../resources/download.png" alt="QR Code" />
                 <button className={styles.closeQrCode} onClick={handleCloseQRCode}>
                     Close
                 </button>
