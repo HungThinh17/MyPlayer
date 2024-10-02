@@ -7,6 +7,8 @@ import { useYouTubeStore } from '../store/store';
 export const YouTubePlayer: React.FC = () => {
     const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
+    const isPlayingRef = React.useRef(isPlaying);
+    const repeatRef = React.useRef(repeat);
 
     React.useEffect(() => {
         // Load YouTube IFrame API
@@ -32,13 +34,13 @@ export const YouTubePlayer: React.FC = () => {
                 },
                 events: {
                     onStateChange: (event: any) => {
-                        if (event.data === (window as any).YT.PlayerState.ENDED && repeat) {
+                        if (event.data === (window as any).YT.PlayerState.ENDED && repeatRef.current) {
                             event.target.playVideo();
                         } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
                             setTimeout(() => {
-                                if(document.visibilityState === 'visible'){
+                                if (document.visibilityState === 'visible') {
                                     setIsPlaying(false);
-                                } else if(document.visibilityState === 'hidden'){
+                                } else if (document.visibilityState === 'hidden') {
                                     event.target.playVideo();
                                 }
                             }, 300);
@@ -71,7 +73,7 @@ export const YouTubePlayer: React.FC = () => {
                 playerRef.current.pauseVideo();
             }
         }
-    }, [isPlaying]);
+    }, [isPlaying, repeat]);
 
     React.useEffect(() => {
         const player = document.getElementById('youtubePlayer');
