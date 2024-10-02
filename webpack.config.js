@@ -7,8 +7,9 @@ module.exports = (env, argv) => {
   return {
     entry: './src/index.tsx',
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, isProduction ? 'archive' : 'dist'),
       filename: isProduction ? '[name].[contenthash].js' : '[name].js',
+      publicPath: isProduction ? 'archive/' : '/',
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -29,6 +30,7 @@ module.exports = (env, argv) => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './src/index.html',
+        filename: isProduction ? '../index.html' : 'index.html',
       }),
     ],
     devServer: {

@@ -78,11 +78,11 @@
 
 .youtubePlayer {
     width: 90%;
-    height: 250px;
+    max-width: 600px;
     margin: 20px 0;
-    transition: width 0.3s, height 0.3s;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 12px;
-    overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
