@@ -7,7 +7,6 @@ import { useYouTubeStore } from '../store/store';
 export const YouTubePlayer: React.FC = () => {
     const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
-    const isPlayingRef = React.useRef(isPlaying);
     const repeatRef = React.useRef(repeat);
 
     React.useEffect(() => {
