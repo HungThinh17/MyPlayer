@@ -27,7 +27,8 @@ export const YouTubePlayer: React.FC = () => {
                     modestbranding: 1,
                     showinfo: 0,
                     fs: 0,
-                    rel: 0
+                    rel: 0,
+                    playsinline: 1
                 },
                 events: {
                     onStateChange: (event: any) => {
@@ -38,6 +39,24 @@ export const YouTubePlayer: React.FC = () => {
                 }
             });
         };
+
+        document.addEventListener('visibilitychange', function () {
+            if (playerRef.current && document.visibilityState === 'hidden') {
+                // Optionally resume playback if the tab is visible
+                 // Check if the player is muted and unmute if necessary
+                 if (playerRef.current.isMuted()) {
+                    playerRef.current.unMute();
+                    console.log('Player unmuted');
+                }
+
+                // Check if the player is paused and resume if necessary
+                const playerState = playerRef.current.getPlayerState();
+                if (playerState === (window as any).YT.PlayerState.PAUSED) {
+                    playerRef.current.playVideo();
+                    console.log('Resumed playing');
+                }
+            }
+        });
 
         return () => {
             if (playerRef.current) {
