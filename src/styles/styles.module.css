@@ -33,21 +33,40 @@
 }
 
 .videoForm {
+    display: flex;
     width: 100%;
 }
 
 .youtubeUrl {
-    display: block;
-    width: 100%;
-    padding: 15px;
+    flex-grow: 1;
+    padding: 10px 15px;
     font-size: 18px;
     border: none;
-    border-radius: 8px;
-    margin-bottom: 5px;
+    border-radius: 8px 0 0 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     background: rgba(255, 255, 255, 0.9);
     color: #000000;
     box-sizing: border-box;
+    line-height: 1.5;
+    height: 50px;
+}
+
+.submitButton {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 18px;
+    transition: background 0.3s;
+    box-sizing: border-box;
+    line-height: 1.5;
+    height: 50px;
+}
+
+.submitButton:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .controls {

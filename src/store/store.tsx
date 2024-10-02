@@ -1,20 +1,24 @@
 import * as React from 'react';
 
 interface YouTubeState {
+  videoUrl: string | null;
   videoId: string | null;
   isPlaying: boolean;
   isVideoMode: boolean;
   isFavorite: boolean;
+  isPastOrClear: boolean;
   repeat: boolean;
   favorites: Array<{ id: string; title: string }>;
   isQRCodeModalVisible: boolean;
 }
 
 interface YouTubeStore extends YouTubeState {
+  setVideoUrl: (url: string | null) => void;
   setVideoId: (id: string | null) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setIsVideoMode: (isVideoMode: boolean) => void;
   setIsFavorite: (isFavorite: boolean) => void;
+  setIsPastOrClear: (isPastOrClear: boolean) => void;
   setRepeat: (repeat: boolean) => void;
   setFavorites: (favorites: Array<{ id: string; title: string }>) => void;
   setIsQRCodeModalVisible: (isVisible: boolean) => void;
@@ -24,10 +28,12 @@ const YouTubeContext = React.createContext<YouTubeStore | undefined>(undefined);
 
 export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const initialState: YouTubeState = {
+    videoUrl: null,
     videoId: null,
     isPlaying: false,
     isVideoMode: true,
     isFavorite: false,
+    isPastOrClear: true,
     repeat: false,
     favorites: [],
     isQRCodeModalVisible: false,
@@ -48,10 +54,12 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const store: YouTubeStore = {
     ...state,
+    setVideoUrl: (url) => setState((prev) => ({ ...prev, videoUrl: url })),
     setVideoId: (id) => setState((prev) => ({ ...prev, videoId: id })),
     setIsPlaying: (isPlaying) => setState((prev) => ({ ...prev, isPlaying })),
     setIsVideoMode: (isVideoMode) => setState((prev) => ({ ...prev, isVideoMode })),
     setIsFavorite: (isFavorite) => setState((prev) => ({ ...prev, isFavorite })),
+    setIsPastOrClear: (isPastOrClear) => setState((prev) => ({ ...prev, isPastOrClear })),
     setRepeat: (repeat) => setState((prev) => ({ ...prev, repeat })),
     setFavorites: (favorites) => setState((prev) => ({ ...prev, favorites })),
     setIsQRCodeModalVisible: (isVisible) => setState((prev) => ({ ...prev, isQRCodeModalVisible: isVisible })),

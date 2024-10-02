@@ -3,8 +3,7 @@ import styles from '../styles/styles.module.css';
 import { useYouTubeStore } from '../store/store';
 
 export const VideoForm: React.FC = () => {
-    const { setVideoId, setIsPlaying } = useYouTubeStore();
-    const [url, setUrl] = React.useState('');
+    const { videoUrl, setVideoUrl, setVideoId, setIsPlaying } = useYouTubeStore();
 
     const extractVideoId = (url: string): string | null => {
         const regExp = /^.*(youtu.be\/|v\/|\/u\/\w\/|embed\/|watch\?v=|\&v=|watch\?.*v=)([^#\&\?]*).*/;
@@ -14,7 +13,7 @@ export const VideoForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const id = extractVideoId(url);
+        const id = extractVideoId(videoUrl);
         if (id) {
             setVideoId(id);
             setIsPlaying(true);
@@ -29,10 +28,13 @@ export const VideoForm: React.FC = () => {
                 type="text"
                 className={styles.youtubeUrl}
                 placeholder="Enter YouTube URL"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
                 required
             />
+            <button type="submit" className={styles.submitButton}>
+                <i className="fas fa-arrow-right"></i>
+            </button>
         </form>
     );
 };

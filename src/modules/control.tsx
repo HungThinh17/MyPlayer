@@ -4,8 +4,9 @@ import { useYouTubeStore } from '../store/store';
 
 export const Controls: React.FC = () => {
     const {
-        isPlaying, isVideoMode, isFavorite, repeat, favorites, videoId,
-        setIsPlaying, setIsVideoMode, setIsFavorite, setRepeat, setFavorites
+        isPlaying, isVideoMode, isFavorite, isPastOrClear,
+        repeat, favorites, videoId, videoUrl,
+        setIsPlaying, setIsVideoMode, setIsFavorite, setRepeat, setFavorites, setIsPastOrClear, setVideoUrl
     } = useYouTubeStore();
 
     const togglePlayPause = () => setIsPlaying(!isPlaying);
@@ -40,9 +41,24 @@ export const Controls: React.FC = () => {
                 }
             });
         }
-    };    const handlePasteOrClear = () => {
-        // Implement paste or clear logic here
+    };    
+    
+    const handlePasteOrClear = () => {
+        if (isPastOrClear) {
+            navigator.clipboard.readText().then(text => {
+                if (text) {
+                    setVideoUrl(text);
+                    setIsPastOrClear(false); // Switch to clear mode
+                }
+            }).catch(err => {
+                console.error('Failed to read clipboard contents: ', err);
+            });
+        } else {
+            setVideoUrl(''); // Clear the URL
+            setIsPastOrClear(true); // Switch back to paste mode
+        }
     };
+    
 
     const fetchVideoTitle = async (videoId: string) => {
         if (!videoId) {
@@ -86,7 +102,7 @@ export const Controls: React.FC = () => {
                 <i className={`${isFavorite ? 'fas fa-star' : 'far fa-star'}`}></i>
             </button>
             <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear}>
-                <i className="fas fa-paste"></i>
+                <i className={`${isPastOrClear ? 'fas fa-paste' : 'fas fa-times'}`}></i>
             </button>
         </div>
     );
