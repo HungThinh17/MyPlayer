@@ -1,11 +1,12 @@
 import * as React from 'react';
-import styles from '../styles/styles.module.css';
+import styles from '../styles/player.module.css';
 import { useYouTubeStore } from '../store/store';
+import SpinningDiskEffect from './visualEffect';
 
 /// <reference types="youtube" />
 
 export const YouTubePlayer: React.FC = () => {
-    const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
+    const { videoUrl, isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
     const repeatRef = React.useRef(repeat);
 
@@ -65,6 +66,8 @@ export const YouTubePlayer: React.FC = () => {
     }, [videoId]);
 
     React.useEffect(() => {
+        repeatRef.current = repeat;
+
         if (playerRef.current) {
             if (isPlaying) {
                 playerRef.current.playVideo();
@@ -79,7 +82,17 @@ export const YouTubePlayer: React.FC = () => {
         if (player) {
             player.style.display = isVideoMode ? 'block' : 'none';
         }
+
+        const audioVisualizer = document.getElementById('audioVisualizer');
+        if (audioVisualizer) {
+            audioVisualizer.style.display = isVideoMode ? 'none' : 'block';
+        }
     }, [isVideoMode]);
 
-    return <div id="youtubePlayer" className={styles.youtubePlayer}></div>;
+    return (
+        <div>
+            <div id="youtubePlayer" className={styles.youtubePlayer} ></div>
+            <SpinningDiskEffect id="audioVisualizer" className={styles.audioVisualizer} />
+        </div>
+    );
 };
