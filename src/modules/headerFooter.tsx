@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styles from '../styles/styles.module.css';
+import styles from '../styles/headerFooter.module.css';
 import { useYouTubeStore } from '../store/store';
 
 
@@ -40,7 +40,7 @@ export const QRCodeModal: React.FC = () => {
     return (
         <div className={styles.qrCodeModal}>
             <div className={styles.qrCodeContent}>
-                <img className={styles.qrCodeImage} src="../../resources/download.png" alt="QR Code" />
+                <div className={styles.qrCodeImage} />
                 <button className={styles.closeQrCode} onClick={handleCloseQRCode}>
                     Close
                 </button>

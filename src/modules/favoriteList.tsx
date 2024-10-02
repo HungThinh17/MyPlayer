@@ -7,7 +7,9 @@ export const FavoriteList: React.FC = () => {
 
     const selectFavorite = (id: string) => {
         setVideoId(id);
-        setIsPlaying(true);
+        setTimeout(() => {
+            setIsPlaying(true);
+        }, 600);
     };
 
     return (

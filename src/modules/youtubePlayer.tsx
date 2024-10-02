@@ -1,12 +1,14 @@
 import * as React from 'react';
-import styles from '../styles/styles.module.css';
+import styles from '../styles/player.module.css';
 import { useYouTubeStore } from '../store/store';
+import SpinningDiskEffect from './visualEffect';
 
 /// <reference types="youtube" />
 
 export const YouTubePlayer: React.FC = () => {
-    const { isVideoMode, videoId, isPlaying, repeat } = useYouTubeStore();
+    const { videoUrl, isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
+    const repeatRef = React.useRef(repeat);
 
     React.useEffect(() => {
         // Load YouTube IFrame API
@@ -32,31 +34,23 @@ export const YouTubePlayer: React.FC = () => {
                 },
                 events: {
                     onStateChange: (event: any) => {
-                        if (event.data === (window as any).YT.PlayerState.ENDED && repeat) {
+                        if (event.data === (window as any).YT.PlayerState.ENDED && repeatRef.current) {
                             event.target.playVideo();
+                        } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+                            setTimeout(() => {
+                                if (document.visibilityState === 'visible') {
+                                    setIsPlaying(false);
+                                } else if (document.visibilityState === 'hidden') {
+                                    event.target.playVideo();
+                                }
+                            }, 300);
+                        } else if (event.data === (window as any).YT.PlayerState.PLAYING) {
+                            setIsPlaying(true);
                         }
                     }
                 }
             });
         };
-
-        document.addEventListener('visibilitychange', function () {
-            if (playerRef.current && document.visibilityState === 'hidden') {
-                // Optionally resume playback if the tab is visible
-                 // Check if the player is muted and unmute if necessary
-                 if (playerRef.current.isMuted()) {
-                    playerRef.current.unMute();
-                    console.log('Player unmuted');
-                }
-
-                // Check if the player is paused and resume if necessary
-                const playerState = playerRef.current.getPlayerState();
-                if (playerState === (window as any).YT.PlayerState.PAUSED) {
-                    playerRef.current.playVideo();
-                    console.log('Resumed playing');
-                }
-            }
-        });
 
         return () => {
             if (playerRef.current) {
@@ -72,6 +66,8 @@ export const YouTubePlayer: React.FC = () => {
     }, [videoId]);
 
     React.useEffect(() => {
+        repeatRef.current = repeat;
+
         if (playerRef.current) {
             if (isPlaying) {
                 playerRef.current.playVideo();
@@ -79,14 +75,24 @@ export const YouTubePlayer: React.FC = () => {
                 playerRef.current.pauseVideo();
             }
         }
-    }, [isPlaying]);
+    }, [isPlaying, repeat]);
 
     React.useEffect(() => {
         const player = document.getElementById('youtubePlayer');
         if (player) {
             player.style.display = isVideoMode ? 'block' : 'none';
         }
+
+        const audioVisualizer = document.getElementById('audioVisualizer');
+        if (audioVisualizer) {
+            audioVisualizer.style.display = isVideoMode ? 'none' : 'block';
+        }
     }, [isVideoMode]);
 
-    return <div id="youtubePlayer" className={styles.youtubePlayer}></div>;
+    return (
+        <div>
+            <div id="youtubePlayer" className={styles.youtubePlayer} ></div>
+            <SpinningDiskEffect id="audioVisualizer" className={styles.audioVisualizer} />
+        </div>
+    );
 };
