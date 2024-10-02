@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styles from '../styles/styles.module.css';
+import styles from '../styles/favorite.module.css';
 import { useYouTubeStore } from '../store/store';
 
 export const FavoriteList: React.FC = () => {
