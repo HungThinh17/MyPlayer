@@ -11,7 +11,7 @@ interface SpinningDiskEffectProps {
 const SpinningDiskEffect: React.FC<SpinningDiskEffectProps> = ({ 
   id = 'defaultSpinningDiskEffect', 
   className = '',
-  rotationSpeed = 0.0001 // Default rotation speed
+  rotationSpeed = 0.00005 // Default rotation speed
 }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const animationRef = React.useRef<number>();
