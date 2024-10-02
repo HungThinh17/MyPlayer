@@ -87,6 +87,14 @@ export const Controls: React.FC = () => {
         }
     };
 
+    React.useEffect(() => {
+        if (videoUrl) {
+            setIsPastOrClear(false); // Switch to clear mode
+        } else {
+            setIsPastOrClear(true); // Switch back to paste mode
+        }
+    }, [videoUrl]);
+
     return (
         <div className={styles.controls}>
             <button type="button" className={`${styles.iconButton} ${styles.playPauseButton}`} onClick={togglePlayPause}>

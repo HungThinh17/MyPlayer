@@ -5,7 +5,7 @@ import { useYouTubeStore } from '../store/store';
 /// <reference types="youtube" />
 
 export const YouTubePlayer: React.FC = () => {
-    const { isVideoMode, videoId, isPlaying, repeat } = useYouTubeStore();
+    const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
 
     React.useEffect(() => {
@@ -34,29 +34,21 @@ export const YouTubePlayer: React.FC = () => {
                     onStateChange: (event: any) => {
                         if (event.data === (window as any).YT.PlayerState.ENDED && repeat) {
                             event.target.playVideo();
+                        } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+                            setTimeout(() => {
+                                if(document.visibilityState === 'visible'){
+                                    setIsPlaying(false);
+                                } else if(document.visibilityState === 'hidden'){
+                                    event.target.playVideo();
+                                }
+                            }, 300);
+                        } else if (event.data === (window as any).YT.PlayerState.PLAYING) {
+                            setIsPlaying(true);
                         }
                     }
                 }
             });
         };
-
-        document.addEventListener('visibilitychange', function () {
-            if (playerRef.current && document.visibilityState === 'hidden') {
-                // Optionally resume playback if the tab is visible
-                 // Check if the player is muted and unmute if necessary
-                 if (playerRef.current.isMuted()) {
-                    playerRef.current.unMute();
-                    console.log('Player unmuted');
-                }
-
-                // Check if the player is paused and resume if necessary
-                const playerState = playerRef.current.getPlayerState();
-                if (playerState === (window as any).YT.PlayerState.PAUSED) {
-                    playerRef.current.playVideo();
-                    console.log('Resumed playing');
-                }
-            }
-        });
 
         return () => {
             if (playerRef.current) {
