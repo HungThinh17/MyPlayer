@@ -6,9 +6,10 @@ import SpinningDiskEffect from './visualEffect';
 /// <reference types="youtube" />
 
 export const YouTubePlayer: React.FC = () => {
-    const { videoUrl, isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
+    const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
     const repeatRef = React.useRef(repeat);
+    const isPlayingRef = React.useRef(isPlaying);
 
     React.useEffect(() => {
         // Load YouTube IFrame API
@@ -34,21 +35,34 @@ export const YouTubePlayer: React.FC = () => {
                 },
                 events: {
                     onStateChange: (event: any) => {
-                        if (event.data === (window as any).YT.PlayerState.ENDED && repeatRef.current) {
-                            event.target.playVideo();
-                        } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
-                            setTimeout(() => {
-                                if (document.visibilityState === 'visible') {
-                                    setIsPlaying(false);
-                                } else if (document.visibilityState === 'hidden') {
-                                    event.target.unMute();
+                        switch (event.data) {
+                            case (window as any).YT.PlayerState.ENDED:
+                                if (repeatRef.current) {
                                     event.target.playVideo();
                                 }
-                            }, 400);
-                        } else if (event.data === (window as any).YT.PlayerState.PLAYING) {
-                            setIsPlaying(true);
+                                break;
+                            case (window as any).YT.PlayerState.PAUSED:
+                                setTimeout(() => {
+                                    if (document.visibilityState === 'visible') {
+                                        setIsPlaying(false);
+                                    } else if (document.visibilityState === 'hidden') {
+                                        event.target.playVideo();
+                                        if (event.target.isMuted() && isPlayingRef.current) {
+                                            event.target.unMute();
+                                        }
+                                    }
+                                }, 400);
+                                break;
+                            case (window as any).YT.PlayerState.PLAYING:
+                                setIsPlaying(true);
+                                // If the video is playing and it's muted, unmute it
+                                if (event.target.isMuted()) {
+                                    event.target.unMute();
+                                }
+                                break;
                         }
                     }
+                    
                 }
             });
         };
@@ -68,6 +82,7 @@ export const YouTubePlayer: React.FC = () => {
 
     React.useEffect(() => {
         repeatRef.current = repeat;
+        isPlayingRef.current = isPlaying;
 
         if (playerRef.current) {
             if (isPlaying) {
