@@ -32,7 +32,7 @@ export const VideoForm: React.FC = () => {
                 onChange={(e) => setVideoUrl(e.target.value)}
                 required
             />
-            <button type="submit" className={styles.submitButton}>
+            <button type="submit" className={styles.submitButton} aria-label="Submit">
                 <i className="fas fa-arrow-right"></i>
             </button>
         </form>

@@ -4,7 +4,12 @@ import { useYouTubeStore } from '../store/store';
 
 
 export const Header: React.FC = () => (
-    <h1 className={styles.title}>My YouTube Player</h1>
+    <header className={styles.header}>
+        <h1 className={styles.title}>
+            <span className={styles.titleWord}>YouTube</span>
+            <span className={styles.titleWord}>Tracks</span>
+        </h1>
+    </header>
 );
 
 export const Footer: React.FC = () => {

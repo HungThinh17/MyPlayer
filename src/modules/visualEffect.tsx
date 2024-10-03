@@ -1,23 +1,21 @@
 import * as React from 'react';
-import styles from '../styles/player.module.css';
 import { useYouTubeStore } from '../store/store';
 
 interface SpinningDiskEffectProps {
   id?: string;
   className?: string;
-  rotationSpeed?: number; // Added rotationSpeed prop
+  rotationSpeed?: number;
 }
 
 const SpinningDiskEffect: React.FC<SpinningDiskEffectProps> = ({ 
   id = 'defaultSpinningDiskEffect', 
   className = '',
-  rotationSpeed = 0.00005 // Default rotation speed
+  rotationSpeed = 0.005
 }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const animationRef = React.useRef<number>();
-  const [rotation, setRotation] = React.useState(0);
-  const [image, setImage] = React.useState<HTMLImageElement | null>(null);
   const { videoId, isPlaying } = useYouTubeStore();
+  const [image, setImage] = React.useState<HTMLImageElement | null>(null);
+  const rotationRef = React.useRef(0);
 
   React.useEffect(() => {
     if (videoId) {
@@ -29,59 +27,60 @@ const SpinningDiskEffect: React.FC<SpinningDiskEffectProps> = ({
   }, [videoId]);
 
   React.useEffect(() => {
-    if (!canvasRef.current || !image) return;
-
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d')!;
-    const CENTER_X = canvas.width / 2;
-    const CENTER_Y = canvas.height / 2;
-    const DISK_RADIUS = Math.min(CENTER_X, CENTER_Y) * 0.8;
+    if (!canvas || !image) return;
 
-    function draw() {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) * 0.8;
+
+    let animationFrameId: number;
+
+    const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw the vinyl record
       ctx.save();
-      ctx.translate(CENTER_X, CENTER_Y);
-      ctx.rotate(rotation);
+      ctx.translate(centerX, centerY);
+      ctx.rotate(rotationRef.current);
 
-      // Outer ring
+      // Draw outer ring
       ctx.beginPath();
-      ctx.arc(0, 0, DISK_RADIUS, 0, Math.PI * 2);
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
       ctx.fillStyle = '#333';
       ctx.fill();
 
-      // Album art
+      // Draw album art
       ctx.save();
       ctx.beginPath();
-      ctx.arc(0, 0, DISK_RADIUS * 0.9, 0, Math.PI * 2);
+      ctx.arc(0, 0, radius * 0.9, 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(image, -DISK_RADIUS * 0.9, -DISK_RADIUS * 0.9, DISK_RADIUS * 1.8, DISK_RADIUS * 1.8);
+      ctx.drawImage(image, -radius * 0.9, -radius * 0.9, radius * 1.8, radius * 1.8);
       ctx.restore();
 
-      // Inner ring
+      // Draw inner ring
       ctx.beginPath();
-      ctx.arc(0, 0, DISK_RADIUS * 0.1, 0, Math.PI * 2);
+      ctx.arc(0, 0, radius * 0.1, 0, Math.PI * 2);
       ctx.fillStyle = '#333';
       ctx.fill();
 
       ctx.restore();
 
       if (isPlaying) {
-        setRotation(prev => (prev + rotationSpeed) % (Math.PI * 2));
-        animationRef.current = requestAnimationFrame(draw);
+        rotationRef.current += rotationSpeed;
       }
-    }
 
-    draw();
-    console.log('SpinningDiskEffect isPlaying:', isPlaying);
+      animationFrameId = window.requestAnimationFrame(render);
+    };
+
+    render();
 
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      window.cancelAnimationFrame(animationFrameId);
     };
-  }, [isPlaying, image, rotation, rotationSpeed]);
+  }, [image, isPlaying, rotationSpeed]);
 
   return <canvas id={id} ref={canvasRef} className={className} width="640" height="360" />;
 };

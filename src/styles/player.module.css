@@ -1,30 +1,32 @@
-
-
-.youtubePlayer {
-    max-width: 600px;
-    margin: 20px 0;
-    padding: 20px;
+.playerContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 640px;
+    margin: 5px 0;
+    padding: 0;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+    overflow: hidden; /* Ensure content doesn't overflow the container */
 }
 
-.youtubeUrl {
-    flex-grow: 1;
-    padding: 10px 15px;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px 0 0 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    background: rgba(255, 255, 255, 0.9);
-    color: #000000;
-    box-sizing: border-box;
-    line-height: 1.5;
-    height: 50px;
+.youtubePlayer {
+    position: relative;
+    width: 100%;
+}
+
+.youtubePlayer iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .audioVisualizer {
     width: 100%;
-    height: 100%;
-    background-color: #000;
-  }
+    aspect-ratio: 16 / 9;
+    align-self: center;
+}

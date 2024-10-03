@@ -41,9 +41,10 @@ export const YouTubePlayer: React.FC = () => {
                                 if (document.visibilityState === 'visible') {
                                     setIsPlaying(false);
                                 } else if (document.visibilityState === 'hidden') {
+                                    event.target.unMute();
                                     event.target.playVideo();
                                 }
-                            }, 300);
+                            }, 400);
                         } else if (event.data === (window as any).YT.PlayerState.PLAYING) {
                             setIsPlaying(true);
                         }
@@ -90,8 +91,8 @@ export const YouTubePlayer: React.FC = () => {
     }, [isVideoMode]);
 
     return (
-        <div>
-            <div id="youtubePlayer" className={styles.youtubePlayer} ></div>
+        <div className={styles.playerContainer}>
+            <div id="youtubePlayer" className={styles.youtubePlayer}></div>
             <SpinningDiskEffect id="audioVisualizer" className={styles.audioVisualizer} />
         </div>
     );
