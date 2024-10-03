@@ -41,8 +41,8 @@ export const Controls: React.FC = () => {
                 }
             });
         }
-    };    
-    
+    };
+
     const handlePasteOrClear = () => {
         if (isPastOrClear) {
             navigator.clipboard.readText().then(text => {
@@ -58,27 +58,27 @@ export const Controls: React.FC = () => {
             setIsPastOrClear(true); // Switch back to paste mode
         }
     };
-    
+
 
     const fetchVideoTitle = async (videoId: string) => {
         if (!videoId) {
             throw new Error("Invalid video ID");
         }
-    
+
         const apiKey = 'AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI'; // Replace with your actual API key
         const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet`;
-    
+
         try {
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Error fetching video data: ${response.statusText}`);
             }
-            
+
             const data = await response.json();
             if (data.items.length === 0) {
                 throw new Error("No video found for the given ID");
             }
-            
+
             const videoTitle = data.items[0].snippet.title;
             return videoTitle;
         } catch (error) {
@@ -97,21 +97,22 @@ export const Controls: React.FC = () => {
 
     return (
         <div className={styles.controls}>
-            <button type="button" className={`${styles.iconButton} ${styles.playPauseButton}`} onClick={togglePlayPause}>
+            <button type="button" className={`${styles.iconButton} ${styles.playPauseButton}`} onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"}>
                 <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.audioVideoToggleButton}`} onClick={toggleMode}>
+            <button className={`${styles.iconButton} ${styles.audioVideoToggleButton}`} onClick={toggleMode} aria-label={isVideoMode ? "Switch to audio mode" : "Switch to video mode"}>
                 <i className={`fas ${isVideoMode ? 'fa-video' : 'fa-volume-up'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.repeatButton}`} onClick={toggleRepeat}>
+            <button className={`${styles.iconButton} ${styles.repeatButton}`} onClick={toggleRepeat} aria-label={repeat ? "Turn off repeat" : "Turn on repeat"}>
                 <i className={`fas ${repeat ? 'fa-sync-alt' : 'fa-redo'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.favoriteButton}`} onClick={toggleFavorite}>
+            <button className={`${styles.iconButton} ${styles.favoriteButton}`} onClick={toggleFavorite} aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}>
                 <i className={`${isFavorite ? 'fas fa-star' : 'far fa-star'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear}>
+            <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear} aria-label={isPastOrClear ? "Paste" : "Clear"}>
                 <i className={`${isPastOrClear ? 'fas fa-paste' : 'fas fa-times'}`}></i>
             </button>
         </div>
+
     );
 };
