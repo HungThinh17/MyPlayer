@@ -91,9 +91,10 @@ export const YouTubePlayer: React.FC = () => {
     }, [isVideoMode]);
 
     return (
-        <div>
-            <div id="youtubePlayer" className={styles.youtubePlayer} ></div>
+        <div className={styles.playerContainer}>
+            <div id="youtubePlayer" className={styles.youtubePlayer}></div>
             <SpinningDiskEffect id="audioVisualizer" className={styles.audioVisualizer} />
         </div>
+
     );
 };
