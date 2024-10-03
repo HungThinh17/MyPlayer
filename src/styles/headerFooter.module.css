@@ -3,42 +3,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 .header {
-  text-align: center;
-  padding: 20px 0;
+    text-align: center;
+    padding: 20px 0;
 }
 
 .title {
-  font-family: 'Permanent Marker', cursive;
-  font-size: 3rem;
-  color: #333;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-  margin: 0;
+    display: inline-flex;
+    width: 100%;
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
 }
 
 .titleWord {
-  display: inline-block;
-  transition: transform 0.3s ease, color 0.3s ease;
+    display: inline-flex;
+    width: 100%;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .titleWord:first-child {
-  color: #e73c3c;
+    color: #e73c3c;
 }
 
 .titleWord:last-child {
-  color: #3f34db;
+    color: #3f34db;
 }
 
 .titleWord:hover {
-  transform: scale(1.1) rotate(-5deg);
+    transform: scale(1.1) rotate(-5deg);
 }
 
 .qrCodeImage {
-  width: 200px; /* Adjust the size as needed */
-  height: 200px; /* Adjust the size as needed */
-  background-image: url('../../resources/download.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+    width: 200px;
+    /* Adjust the size as needed */
+    height: 200px;
+    /* Adjust the size as needed */
+    background-image: url('../../resources/download.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .footer {
@@ -89,4 +94,3 @@
 .closeQrCode:hover {
     background-color: #052e1a;
 }
-
