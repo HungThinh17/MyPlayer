@@ -95,6 +95,5 @@ export const YouTubePlayer: React.FC = () => {
             <div id="youtubePlayer" className={styles.youtubePlayer}></div>
             <SpinningDiskEffect id="audioVisualizer" className={styles.audioVisualizer} />
         </div>
-
     );
 };
