@@ -42,7 +42,18 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Load state from local storage
   const loadStateFromLocalStorage = () => {
     const savedState = localStorage.getItem('youtubeState');
-    return savedState ? JSON.parse(savedState) : initialState;
+    if (savedState) {
+      const parsedState = JSON.parse(savedState);
+      return {
+        ...initialState,  // Fallback for any missing properties
+        ...parsedState,   // Override with saved values
+        isPlaying: false  // Always set isPlaying to false
+      };
+    }
+    return {
+      ...initialState,
+      isPlaying: false
+    };
   };
 
   const [state, setState] = React.useState<YouTubeState>(loadStateFromLocalStorage());
