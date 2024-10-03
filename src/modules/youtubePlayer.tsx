@@ -45,10 +45,8 @@ export const YouTubePlayer: React.FC = () => {
                                 setTimeout(() => {
                                     if (document.visibilityState === 'visible') {
                                         setIsPlaying(false);
-                                    } else if (document.visibilityState === 'hidden') {
-                                        trackingPlayerState();
                                     }
-                                }, 400);
+                                }, 300);
                                 break;
                             case (window as any).YT.PlayerState.PLAYING:
                                 setIsPlaying(true);
@@ -62,6 +60,12 @@ export const YouTubePlayer: React.FC = () => {
                     
                 }
             });
+
+            document.onvisibilitychange = () => {
+                if (document.visibilityState === 'hidden') {
+                    trackingPlayerState();
+                }
+            };
 
             function trackingPlayerState() {
                 let attemptCount = 0;
@@ -84,7 +88,7 @@ export const YouTubePlayer: React.FC = () => {
             
                         attemptCount++;
                     }
-                }, 200);
+                }, 300);
             
                 // Return a cleanup function to clear the interval when component unmounts or max attempts are reached
                 return () => clearInterval(intervalId);
