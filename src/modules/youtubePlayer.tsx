@@ -46,10 +46,7 @@ export const YouTubePlayer: React.FC = () => {
                                     if (document.visibilityState === 'visible') {
                                         setIsPlaying(false);
                                     } else if (document.visibilityState === 'hidden') {
-                                        event.target.playVideo();
-                                        if (event.target.isMuted() && isPlayingRef.current) {
-                                            event.target.unMute();
-                                        }
+                                        trackingPlayerState();
                                     }
                                 }, 400);
                                 break;
@@ -65,6 +62,33 @@ export const YouTubePlayer: React.FC = () => {
                     
                 }
             });
+
+            function trackingPlayerState() {
+                let attemptCount = 0;
+                const maxAttempts = 5;
+            
+                const intervalId = setInterval(() => {
+                    if (attemptCount >= maxAttempts) {
+                        clearInterval(intervalId);
+                        return;
+                    }
+            
+                    if (playerRef.current && isPlayingRef.current) {
+                        if (playerRef.current.isMuted()) {
+                            playerRef.current.unMute();
+                        }
+            
+                        if (playerRef.current.getPlayerState() === (window as any).YT.PlayerState.PAUSED) {
+                            playerRef.current.playVideo();
+                        }
+            
+                        attemptCount++;
+                    }
+                }, 200);
+            
+                // Return a cleanup function to clear the interval when component unmounts or max attempts are reached
+                return () => clearInterval(intervalId);
+            }
         };
 
         return () => {
