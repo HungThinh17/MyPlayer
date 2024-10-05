@@ -2,16 +2,46 @@
   "name": "myplayer",
   "version": "1.0.0",
   "description": "Small web app to play media from google driver.",
-  "main": "script.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist && rimraf archive",
     "build": "rimraf archive && webpack --mode production",
     "build-dev": "rimraf dist && webpack --mode development",
-    "start": "webpack serve --mode development"
+    "start": "webpack serve --mode development",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.hungti.myplayer",
+    "productName": "My Player",
+    "win": {
+      "target": [
+        {
+          "target": "msi",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false,
+      "icon": "resources/icon.ico"
+    },
+    "msi": {
+      "oneClick": false,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "files": [
+      "index.html",
+      "main.js",
+      "archive/**/*"
+    ]
   },
   "keywords": [],
-  "author": "",
+  "author": "HungTi",
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.25.2",
@@ -29,6 +59,8 @@
   "devDependencies": {
     "@types/youtube": "^0.1.0",
     "css-loader": "^6.11.0",
+    "electron": "^32.1.2",
+    "electron-builder": "^25.1.7",
     "html-webpack-plugin": "^5.6.0",
     "rimraf": "^6.0.1",
     "style-loader": "^3.3.4",
