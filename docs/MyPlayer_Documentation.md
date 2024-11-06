@@ -58,6 +58,10 @@ const PlaylistManager = () => {
     // Update current playlist
   };
 
+  const handleCreatePlaylist = () => {
+    // Create a new playlist
+  };
+
   return (
     <div>
       <h2>Playlists</h2>
@@ -66,6 +70,7 @@ const PlaylistManager = () => {
           <li key={playlist.id}>{playlist.name}</li>
         ))}
       </ul>
+      <button onClick={handleCreatePlaylist}>Create Playlist</button>
     </div>
   );
 };
