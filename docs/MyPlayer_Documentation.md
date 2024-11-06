@@ -46,9 +46,14 @@ MyPlayer is a web application that allows users to play YouTube media in the bac
 ## Project Structure
 import React, { useState, useEffect } from 'react';
 
-const PlaylistManager = () => {
-  const [playlists, setPlaylists] = useState([]);
-  const [currentPlaylist, setCurrentPlaylist] = useState(null);
+interface Playlist {
+  id: number;
+  name: string;
+}
+
+const PlaylistManager = (): JSX.Element => {
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | null>(null);
 
   useEffect(() => {
     // Load playlists from storage or API
