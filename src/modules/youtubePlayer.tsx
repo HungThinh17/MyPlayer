@@ -6,7 +6,7 @@ import SpinningDiskEffect from './visualEffect';
 /// <reference types="youtube" />
 
 export const YouTubePlayer: React.FC = () => {
-    const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying } = useYouTubeStore();
+    const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying, setCurrentVideo } = useYouTubeStore();
     const playerRef = React.useRef<any>(null);
     const repeatRef = React.useRef(repeat);
     const isPlayingRef = React.useRef(isPlaying);
@@ -34,6 +34,9 @@ export const YouTubePlayer: React.FC = () => {
                     playsinline: 1
                 },
                 events: {
+                    onReady: (event: any) => {
+                        console.log('Player Ready', event.target.getVideoData());
+                    },
                     onStateChange: (event: any) => {
                         switch (event.data) {
                             case (window as any).YT.PlayerState.ENDED:
@@ -54,6 +57,10 @@ export const YouTubePlayer: React.FC = () => {
                                 if (event.target.isMuted()) {
                                     event.target.unMute();
                                 }
+                                console.log('Video Playing', videoId);
+                                const videoData = event.target.getVideoData();
+                                console.log('Video Data:', videoData);
+                                setCurrentVideo({id: videoId || '', title: videoData.title});
                                 break;
                         }
                     }

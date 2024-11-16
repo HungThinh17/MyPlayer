@@ -10,6 +10,7 @@ interface YouTubeState {
   repeat: boolean;
   favorites: Array<{ id: string; title: string }>;
   isQRCodeModalVisible: boolean;
+  currentVideo: { id: string; title: string } | null; // Added currentVideo
 }
 
 interface YouTubeStore extends YouTubeState {
@@ -22,6 +23,7 @@ interface YouTubeStore extends YouTubeState {
   setRepeat: (repeat: boolean) => void;
   setFavorites: (favorites: Array<{ id: string; title: string }>) => void;
   setIsQRCodeModalVisible: (isVisible: boolean) => void;
+  setCurrentVideo: (video: { id: string; title: string } | null) => void; // Added setCurrentVideo
 }
 
 const YouTubeContext = React.createContext<YouTubeStore | undefined>(undefined);
@@ -37,6 +39,7 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     repeat: false,
     favorites: [],
     isQRCodeModalVisible: false,
+    currentVideo: null, // Added initial value for currentVideo
   };
 
   // Load state from local storage
@@ -45,9 +48,9 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (savedState) {
       const parsedState = JSON.parse(savedState);
       return {
-        ...initialState,  // Fallback for any missing properties
-        ...parsedState,   // Override with saved values
-        isPlaying: false  // Always set isPlaying to false
+        ...initialState,
+        ...parsedState,
+        isPlaying: false
       };
     }
     return {
@@ -74,6 +77,7 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setRepeat: (repeat) => setState((prev) => ({ ...prev, repeat })),
     setFavorites: (favorites) => setState((prev) => ({ ...prev, favorites })),
     setIsQRCodeModalVisible: (isVisible) => setState((prev) => ({ ...prev, isQRCodeModalVisible: isVisible })),
+    setCurrentVideo: (video) => setState((prev) => ({ ...prev, currentVideo: video })), // Added setCurrentVideo
   };
 
   return <YouTubeContext.Provider value={store}>{children}</YouTubeContext.Provider>;

@@ -7,6 +7,7 @@ import { Controls } from './modules/control';
 import { YouTubePlayer } from './modules/youtubePlayer';
 import Sidebar from './modules/sidebar';
 import { useState, useRef, useEffect } from 'react';
+import { TrackInfo } from './modules/trackInfo';
 
 const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -68,6 +69,7 @@ const App: React.FC = () => {
           <Controls />
         </div>
         <YouTubePlayer />
+        <TrackInfo /> {/* Added TrackInfo component */}
         <Footer />
         <QRCodeModal />
       </div>
