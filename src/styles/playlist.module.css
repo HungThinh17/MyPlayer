@@ -1,22 +1,22 @@
-.favoriteListContainer {
+.playlistContainer {
     width: 100%;
 }
 
-.favoritesTitle {
+.playlistTitle {
     font-size: 1.2em; /* Reduced font size */
     margin: 0 0 10px 0; /* Added margin below title */
     padding: 0;
     text-align: left;
 }
 
-.favoriteList {
+.playlistList {
     list-style-type: none;
     padding: 0;
     margin: 0;
     text-align: left;
 }
 
-.favoriteList li {
+.playlistList li {
     font-size: 0.9em; /* Reduced font size */
     white-space: nowrap;
     overflow: hidden;
@@ -26,6 +26,6 @@
     transition: background-color 0.2s;
 }
 
-.favoriteList li:hover {
+.playlistList li:hover {
     background-color: #f0f0f0;
 }

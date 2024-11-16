@@ -76,7 +76,7 @@ export const YouTubePlayer: React.FC = () => {
 
             function trackingPlayerState() {
                 let attemptCount = 0;
-                const maxAttempts = 5;
+                const maxAttempts = 10;
             
                 const intervalId = setInterval(() => {
                     if (attemptCount >= maxAttempts) {

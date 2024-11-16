@@ -69,7 +69,7 @@ const App: React.FC = () => {
           <Controls />
         </div>
         <YouTubePlayer />
-        <TrackInfo /> {/* Added TrackInfo component */}
+        <TrackInfo /> 
         <Footer />
         <QRCodeModal />
       </div>

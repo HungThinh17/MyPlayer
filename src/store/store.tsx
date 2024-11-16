@@ -8,12 +8,12 @@ interface YouTubeState {
   isFavorite: boolean;
   isPastOrClear: boolean;
   repeat: boolean;
-  favorites: Array<{ id: string; title: string }>;
+  playlist: Array<{ id: string; title: string }>;
   isQRCodeModalVisible: boolean;
-  currentVideo: { id: string; title: string } | null; // Added currentVideo
+  currentVideo: { id: string; title: string } | null;
 }
 
-interface YouTubeStore extends YouTubeState {
+interface YouTubeActions {
   setVideoUrl: (url: string | null) => void;
   setVideoId: (id: string | null) => void;
   setIsPlaying: (isPlaying: boolean) => void;
@@ -21,12 +21,13 @@ interface YouTubeStore extends YouTubeState {
   setIsFavorite: (isFavorite: boolean) => void;
   setIsPastOrClear: (isPastOrClear: boolean) => void;
   setRepeat: (repeat: boolean) => void;
-  setFavorites: (favorites: Array<{ id: string; title: string }>) => void;
+  setPlaylist: (playlist: Array<{ id: string; title: string }>) => void;
   setIsQRCodeModalVisible: (isVisible: boolean) => void;
-  setCurrentVideo: (video: { id: string; title: string } | null) => void; // Added setCurrentVideo
+  setCurrentVideo: (video: { id: string; title: string } | null) => void;
+  clearPlaylist: () => void;
 }
 
-const YouTubeContext = React.createContext<YouTubeStore | undefined>(undefined);
+const YouTubeContext = React.createContext<YouTubeState & YouTubeActions | null>(null);
 
 export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const initialState: YouTubeState = {
@@ -37,55 +38,41 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     isFavorite: false,
     isPastOrClear: true,
     repeat: false,
-    favorites: [],
+    playlist: [],
     isQRCodeModalVisible: false,
-    currentVideo: null, // Added initial value for currentVideo
+    currentVideo: null,
   };
 
-  // Load state from local storage
-  const loadStateFromLocalStorage = () => {
-    const savedState = localStorage.getItem('youtubeState');
-    if (savedState) {
-      const parsedState = JSON.parse(savedState);
-      return {
-        ...initialState,
-        ...parsedState,
-        isPlaying: false
-      };
-    }
-    return {
-      ...initialState,
-      isPlaying: false
-    };
-  };
+  const [state, setState] = React.useState<YouTubeState>(initialState);
 
-  const [state, setState] = React.useState<YouTubeState>(loadStateFromLocalStorage());
-
-  // Save state to local storage whenever it changes
   React.useEffect(() => {
     localStorage.setItem('youtubeState', JSON.stringify(state));
   }, [state]);
 
-  const store: YouTubeStore = {
-    ...state,
-    setVideoUrl: (url) => setState((prev) => ({ ...prev, videoUrl: url })),
-    setVideoId: (id) => setState((prev) => ({ ...prev, videoId: id })),
-    setIsPlaying: (isPlaying) => setState((prev) => ({ ...prev, isPlaying })),
-    setIsVideoMode: (isVideoMode) => setState((prev) => ({ ...prev, isVideoMode })),
-    setIsFavorite: (isFavorite) => setState((prev) => ({ ...prev, isFavorite })),
-    setIsPastOrClear: (isPastOrClear) => setState((prev) => ({ ...prev, isPastOrClear })),
-    setRepeat: (repeat) => setState((prev) => ({ ...prev, repeat })),
-    setFavorites: (favorites) => setState((prev) => ({ ...prev, favorites })),
-    setIsQRCodeModalVisible: (isVisible) => setState((prev) => ({ ...prev, isQRCodeModalVisible: isVisible })),
-    setCurrentVideo: (video) => setState((prev) => ({ ...prev, currentVideo: video })), // Added setCurrentVideo
+  const actions: YouTubeActions = {
+    setVideoUrl: (url: string | null) => setState((prev) => ({ ...prev, videoUrl: url })),
+    setVideoId: (id: string | null) => setState((prev) => ({ ...prev, videoId: id })),
+    setIsPlaying: (isPlaying: boolean) => setState((prev) => ({ ...prev, isPlaying })),
+    setIsVideoMode: (isVideoMode: boolean) => setState((prev) => ({ ...prev, isVideoMode })),
+    setIsFavorite: (isFavorite: boolean) => setState((prev) => ({ ...prev, isFavorite })),
+    setIsPastOrClear: (isPastOrClear: boolean) => setState((prev) => ({ ...prev, isPastOrClear })),
+    setRepeat: (repeat: boolean) => setState((prev) => ({ ...prev, repeat })),
+    setPlaylist: (playlist: Array<{ id: string; title: string }>) => setState((prev) => ({ ...prev, playlist })),
+    setIsQRCodeModalVisible: (isVisible: boolean) => setState((prev) => ({ ...prev, isQRCodeModalVisible: isVisible })),
+    setCurrentVideo: (video: { id: string; title: string } | null) => setState((prev) => ({ ...prev, currentVideo: video })),
+    clearPlaylist: () => setState((prev) => ({ ...prev, playlist: [] })),
   };
 
-  return <YouTubeContext.Provider value={store}>{children}</YouTubeContext.Provider>;
+  return (
+    <YouTubeContext.Provider value={{ ...state, ...actions }}>
+      {children}
+    </YouTubeContext.Provider>
+  );
 };
 
-export const useYouTubeStore = () => {
+export const useYouTubeStore = (): YouTubeState & YouTubeActions => {
   const context = React.useContext(YouTubeContext);
-  if (context === undefined) {
+  if (context === null) {
     throw new Error('useYouTubeStore must be used within a YouTubeProvider');
   }
   return context;

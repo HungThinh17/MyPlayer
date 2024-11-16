@@ -30,6 +30,9 @@
 .sidebar ul {
   list-style: none;
   padding: 0;
+  height: calc(100% - 120px); /* Adjust height to accommodate button and padding */
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .sidebar li {
@@ -44,9 +47,53 @@
 .sidebarToggleButton {
   position: absolute;
   top: 10px;
-  right: 10px; /* Changed to right */
+  right: 10px;
   border: none;
   background-color: transparent;
   cursor: pointer;
   font-size: 20px;
+}
+
+.clearButton {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: calc(100% - 40px);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.confirmPopup {
+  position: absolute;
+  bottom: 80px; /* Position below the clear button */
+  background-color: #fff;
+  width: 75%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.confirmPopup p {
+  margin-bottom: 10px;
+}
+
+.confirmPopup button {
+  padding: 5px 10px;
+  margin: 0 5px;
+  background-color: #4CAF50; /* Green for Yes */
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.confirmPopup button:nth-child(2) {
+  background-color: #f44336; /* Red for No */
 }
