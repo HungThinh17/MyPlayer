@@ -1,0 +1,31 @@
+.playlistContainer {
+    width: 100%;
+}
+
+.playlistTitle {
+    font-size: 1.2em; /* Reduced font size */
+    margin: 0 0 10px 0; /* Added margin below title */
+    padding: 0;
+    text-align: left;
+}
+
+.playlistList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.playlistList li {
+    font-size: 0.9em; /* Reduced font size */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    padding: 5px 0; /* Reduced padding */
+    transition: background-color 0.2s;
+}
+
+.playlistList li:hover {
+    background-color: #f0f0f0;
+}

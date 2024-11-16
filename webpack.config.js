@@ -13,6 +13,7 @@ module.exports = (env, argv) => {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      modules: [path.resolve(__dirname, 'src'), 'node_modules'] // Added this line
     },
     module: {
       rules: [

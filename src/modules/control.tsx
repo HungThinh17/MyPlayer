@@ -5,8 +5,8 @@ import { useYouTubeStore } from '../store/store';
 export const Controls: React.FC = () => {
     const {
         isPlaying, isVideoMode, isFavorite, isPastOrClear,
-        repeat, favorites, videoId, videoUrl,
-        setIsPlaying, setIsVideoMode, setIsFavorite, setRepeat, setFavorites, setIsPastOrClear, setVideoUrl
+        repeat, playlist, videoId, videoUrl, // Changed to playlist
+        setIsPlaying, setIsVideoMode, setIsFavorite, setRepeat, setPlaylist, setIsPastOrClear, setVideoUrl // Changed to setPlaylist
     } = useYouTubeStore();
 
     const togglePlayPause = () => setIsPlaying(!isPlaying);
@@ -19,25 +19,25 @@ export const Controls: React.FC = () => {
             return; // Do nothing if videoId is not valid
         }
 
-        // Check if the videoId is already in the favorites list
-        const isAlreadyFavorite = favorites.some(favorite => favorite.id === videoId);
+        // Check if the videoId is already in the playlist
+        const isAlreadyInPlaylist = playlist.some(track => track.id === videoId);
 
-        if (isAlreadyFavorite) {
-            // Remove from favorites
-            const updatedFavorites = favorites.filter(favorite => favorite.id !== videoId);
-            setFavorites(updatedFavorites);
+        if (isAlreadyInPlaylist) {
+            // Remove from playlist
+            const updatedPlaylist = playlist.filter(track => track.id !== videoId);
+            setPlaylist(updatedPlaylist);
             setIsFavorite(false);
         } else {
             // Fetch the video title
             fetchVideoTitle(videoId).then(videoTitle => {
                 if (videoTitle) {
-                    // Add to favorites
-                    const newFavorite = { id: videoId, title: videoTitle };
-                    const updatedFavorites = [...favorites, newFavorite];
-                    setFavorites(updatedFavorites);
+                    // Add to playlist
+                    const newTrack = { id: videoId, title: videoTitle };
+                    const updatedPlaylist = [...playlist, newTrack];
+                    setPlaylist(updatedPlaylist);
                     setIsFavorite(true);
                 } else {
-                    console.log("Could not retrieve video title. Favorite not added.");
+                    console.log("Could not retrieve video title. Track not added.");
                 }
             });
         }
@@ -45,17 +45,22 @@ export const Controls: React.FC = () => {
 
     const handlePasteOrClear = () => {
         if (isPastOrClear) {
-            navigator.clipboard.readText().then(text => {
-                if (text) {
-                    setVideoUrl(text);
-                    setIsPastOrClear(false); // Switch to clear mode
-                }
-            }).catch(err => {
-                console.error('Failed to read clipboard contents: ', err);
-            });
+            if (navigator.clipboard) { 
+                navigator.clipboard.readText().then(text => {
+                    if (text) {
+                        console.log('Pasted Text:', text); 
+                        setVideoUrl(text);
+                        setIsPastOrClear(false); 
+                    }
+                }).catch(err => {
+                    console.error('Failed to read clipboard contents: ', err);
+                });
+            } else {
+                // Do nothing if Clipboard API is not supported
+            }
         } else {
-            setVideoUrl(''); // Clear the URL
-            setIsPastOrClear(true); // Switch back to paste mode
+            setVideoUrl(''); 
+            setIsPastOrClear(true); 
         }
     };
 
@@ -65,7 +70,7 @@ export const Controls: React.FC = () => {
             throw new Error("Invalid video ID");
         }
 
-        const apiKey = 'AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI'; // Replace with your actual API key
+        const apiKey = 'AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI'; 
         const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet`;
 
         try {
@@ -83,15 +88,15 @@ export const Controls: React.FC = () => {
             return videoTitle;
         } catch (error) {
             console.error("Error:", error);
-            return null; // or throw error based on your error handling strategy
+            return null; 
         }
     };
 
     React.useEffect(() => {
         if (videoUrl) {
-            setIsPastOrClear(false); // Switch to clear mode
+            setIsPastOrClear(false); 
         } else {
-            setIsPastOrClear(true); // Switch back to paste mode
+            setIsPastOrClear(true); 
         }
     }, [videoUrl]);
 
@@ -106,13 +111,12 @@ export const Controls: React.FC = () => {
             <button className={`${styles.iconButton} ${styles.repeatButton}`} onClick={toggleRepeat} aria-label={repeat ? "Turn off repeat" : "Turn on repeat"}>
                 <i className={`fas ${repeat ? 'fa-sync-alt' : 'fa-redo'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.favoriteButton}`} onClick={toggleFavorite} aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}>
+            <button className={`${styles.iconButton} ${styles.favoriteButton}`} onClick={toggleFavorite} aria-label={isFavorite ? "Remove from playlist" : "Add to playlist"}> {/* Changed label */}
                 <i className={`${isFavorite ? 'fas fa-star' : 'far fa-star'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear} aria-label={isPastOrClear ? "Paste" : "Clear"}>
+            <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear} aria-label={isPastOrClear ? "Paste" : "Clear"} disabled={!navigator.clipboard}>
                 <i className={`${isPastOrClear ? 'fas fa-paste' : 'fas fa-times'}`}></i>
             </button>
         </div>
-
     );
 };
