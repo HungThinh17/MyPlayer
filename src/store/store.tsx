@@ -8,7 +8,7 @@ interface YouTubeState {
   isFavorite: boolean;
   isPastOrClear: boolean;
   repeat: boolean;
-  playlist: Array<{ id: string; title: string }>;
+  playlist: Array<{ id: string; title: string; subPlaylist?: string }>;
   isQRCodeModalVisible: boolean;
   currentVideo: { id: string; title: string } | null;
 }
@@ -21,7 +21,7 @@ interface YouTubeActions {
   setIsFavorite: (isFavorite: boolean) => void;
   setIsPastOrClear: (isPastOrClear: boolean) => void;
   setRepeat: (repeat: boolean) => void;
-  setPlaylist: (playlist: Array<{ id: string; title: string }>) => void;
+  setPlaylist: (playlist: Array<{ id: string; title: string; subPlaylist?: string }>) => void;
   setIsQRCodeModalVisible: (isVisible: boolean) => void;
   setCurrentVideo: (video: { id: string; title: string } | null) => void;
   clearPlaylist: () => void;
@@ -44,10 +44,29 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const [state, setState] = React.useState<YouTubeState>(initialState);
+  // Flag to prevent initial save
+  const [isInitialLoad, setIsInitialLoad] = React.useState(true);
 
+  // Load playlist on mount
   React.useEffect(() => {
-    localStorage.setItem('youtubeState', JSON.stringify(state));
-  }, [state]);
+    const savedPlaylist = localStorage.getItem('youtubePlaylist');
+    if (savedPlaylist) {
+      const parsedPlaylist = JSON.parse(savedPlaylist);
+      setState(prevState => ({
+        ...prevState,
+        playlist: parsedPlaylist
+      }));
+    }
+    setIsInitialLoad(false);
+  }, []); // Runs only on mount
+
+  // Save playlist changes to localStorage
+  React.useEffect(() => {
+    // Skip saving on initial load
+    if (!isInitialLoad) {
+      localStorage.setItem('youtubePlaylist', JSON.stringify(state.playlist));
+    }
+  }, [state.playlist, isInitialLoad]);
 
   const actions: YouTubeActions = {
     setVideoUrl: (url: string | null) => setState((prev) => ({ ...prev, videoUrl: url })),
@@ -57,7 +76,7 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsFavorite: (isFavorite: boolean) => setState((prev) => ({ ...prev, isFavorite })),
     setIsPastOrClear: (isPastOrClear: boolean) => setState((prev) => ({ ...prev, isPastOrClear })),
     setRepeat: (repeat: boolean) => setState((prev) => ({ ...prev, repeat })),
-    setPlaylist: (playlist: Array<{ id: string; title: string }>) => setState((prev) => ({ ...prev, playlist })),
+    setPlaylist: (playlist: Array<{ id: string; title: string; subPlaylist?: string }>) => setState((prev) => ({ ...prev, playlist })),
     setIsQRCodeModalVisible: (isVisible: boolean) => setState((prev) => ({ ...prev, isQRCodeModalVisible: isVisible })),
     setCurrentVideo: (video: { id: string; title: string } | null) => setState((prev) => ({ ...prev, currentVideo: video })),
     clearPlaylist: () => setState((prev) => ({ ...prev, playlist: [] })),

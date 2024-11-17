@@ -1,12 +1,36 @@
 .playlistContainer {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.playlistHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 3px solid #ddd; 
 }
 
 .playlistTitle {
-    font-size: 1.2em; /* Reduced font size */
-    margin: 0 0 10px 0; /* Added margin below title */
+    font-size: 1.2em; 
+    margin: 0;
     padding: 0;
     text-align: left;
+}
+
+.addSubPlaylistButton {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 .playlistList {
@@ -17,15 +41,64 @@
 }
 
 .playlistList li {
-    font-size: 0.9em; /* Reduced font size */
+    font-size: 0.9em; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
-    padding: 5px 0; /* Reduced padding */
+    padding: 5px 0; 
     transition: background-color 0.2s;
 }
 
 .playlistList li:hover {
     background-color: #f0f0f0;
+}
+
+.fancyPopup {
+  background-color: #f9f9f9; /* Lighter background */
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+  border: 1px solid #ddd; /* Subtle border */
+}
+
+.popupInput {
+  width: 75%;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px; /* Slightly larger font */
+}
+
+.popupButtons {
+  display: flex;
+  justify-content: center;
+}
+
+.popupButtons button {
+  margin-left: 10px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #4CAF50; /* Green button */
+  color: white;
+}
+
+.popupButtons button:last-child {
+  background-color: #f44336; /* Red button */
+  color: white;
+}
+
+.subPlaylistHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribute space between items */
+    margin-bottom: 5px;
+    border-top: 3px solid #ddd;
+}
+
+.subPlaylistExpandCollapseButton {
+    margin-left: 10px; 
 }
