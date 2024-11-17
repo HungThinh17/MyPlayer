@@ -61,7 +61,7 @@ const App: React.FC = () => {
 
   return (
     <YouTubeProvider>
-      <div className={styles.app} ref={appRef} onClick={() => setIsSidebarOpen(false)}>
+      <div className={styles.app} ref={appRef} onClick={() => setIsSidebarOpen(false)} onDoubleClick={()=>setIsSidebarOpen(true)}>
         <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} /> 
         <Header />
         <div className={styles.formContainer}>
