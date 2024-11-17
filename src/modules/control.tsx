@@ -1,56 +1,88 @@
 import * as React from 'react';
 import styles from '../styles/styles.module.css';
 import { useYouTubeStore } from '../store/store';
+import { Popup } from './utilities';
+
+interface Track {
+    id: string;
+    title: string;
+    subPlaylist?: string;
+}
 
 export const Controls: React.FC = () => {
     const {
         isPlaying, isVideoMode, isFavorite, isPastOrClear,
-        repeat, playlist, videoId, videoUrl, // Changed to playlist
-        setIsPlaying, setIsVideoMode, setIsFavorite, setRepeat, setPlaylist, setIsPastOrClear, setVideoUrl // Changed to setPlaylist
+        repeat, playlist, videoId, videoUrl,
+        setIsPlaying, setIsVideoMode, setIsFavorite, setRepeat, setPlaylist, setIsPastOrClear, setVideoUrl
     } = useYouTubeStore();
+    const [isSubPlaylistPopupOpen, setIsSubPlaylistPopupOpen] = React.useState(false);
+    const [selectedSubPlaylist, setSelectedSubPlaylist] = React.useState('');
 
     const togglePlayPause = () => setIsPlaying(!isPlaying);
     const toggleMode = () => setIsVideoMode(!isVideoMode);
     const toggleRepeat = () => setRepeat(!repeat);
     const toggleFavorite = () => {
-        // Check if videoId is valid
         if (!videoId) {
             console.log("Invalid video ID. Cannot toggle favorite.");
-            return; // Do nothing if videoId is not valid
+            return;
         }
-
-        // Check if the videoId is already in the playlist
-        const isAlreadyInPlaylist = playlist.some(track => track.id === videoId);
-
-        if (isAlreadyInPlaylist) {
-            // Remove from playlist
-            const updatedPlaylist = playlist.filter(track => track.id !== videoId);
-            setPlaylist(updatedPlaylist);
-            setIsFavorite(false);
+        const subPlaylists = ['**Untrack**', 'Main Playlist', ...playlist.filter(track => track.subPlaylist && track.id.includes('subplaylist')).map(track => track.subPlaylist)];
+        if (subPlaylists.length > 2) {
+            setIsSubPlaylistPopupOpen(true);
         } else {
-            // Fetch the video title
-            fetchVideoTitle(videoId).then(videoTitle => {
-                if (videoTitle) {
-                    // Add to playlist
-                    const newTrack = { id: videoId, title: videoTitle };
+            addToSubPlaylist('Main Playlist');
+            setIsFavorite(true);
+        }
+    };
+
+    const handleSubPlaylistSelect = (subPlaylist: string) => {
+        setSelectedSubPlaylist(subPlaylist);
+        if (subPlaylist === '**Untrack**') {
+            removeFromPlaylist();
+        } else {
+            addToSubPlaylist(subPlaylist);
+        }
+        setIsSubPlaylistPopupOpen(false);
+    };
+
+    const addToSubPlaylist = (subPlaylist: string) => {
+        if (!videoId) return;
+        fetchVideoTitle(videoId).then(videoTitle => {
+            if (videoTitle) {
+                const newTrack: Track = { id: videoId, title: videoTitle, subPlaylist };
+                const existingTrackIndex = playlist.findIndex(track => track.id === videoId);
+                if (existingTrackIndex === -1) {
                     const updatedPlaylist = [...playlist, newTrack];
                     setPlaylist(updatedPlaylist);
                     setIsFavorite(true);
                 } else {
-                    console.log("Could not retrieve video title. Track not added.");
+                    const updatedPlaylist = [...playlist];
+                    updatedPlaylist[existingTrackIndex].subPlaylist = subPlaylist;
+                    setPlaylist(updatedPlaylist);
+                    setIsFavorite(true);
+                    console.log('Track subplaylist updated.');
                 }
-            });
-        }
+            } else {
+                console.log("Could not retrieve video title. Track not added.");
+            }
+        });
+    };
+
+    const removeFromPlaylist = () => {
+        if (!videoId) return;
+        const updatedPlaylist = playlist.filter(track => track.id !== videoId);
+        setPlaylist(updatedPlaylist);
+        setIsFavorite(false);
     };
 
     const handlePasteOrClear = () => {
         if (isPastOrClear) {
-            if (navigator.clipboard) { 
+            if (navigator.clipboard) {
                 navigator.clipboard.readText().then(text => {
                     if (text) {
-                        console.log('Pasted Text:', text); 
+                        console.log('Pasted Text:', text);
                         setVideoUrl(text);
-                        setIsPastOrClear(false); 
+                        setIsPastOrClear(false);
                     }
                 }).catch(err => {
                     console.error('Failed to read clipboard contents: ', err);
@@ -59,18 +91,17 @@ export const Controls: React.FC = () => {
                 // Do nothing if Clipboard API is not supported
             }
         } else {
-            setVideoUrl(''); 
-            setIsPastOrClear(true); 
+            setVideoUrl('');
+            setIsPastOrClear(true);
         }
     };
-
 
     const fetchVideoTitle = async (videoId: string) => {
         if (!videoId) {
             throw new Error("Invalid video ID");
         }
 
-        const apiKey = 'AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI'; 
+        const apiKey = 'AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI';
         const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet`;
 
         try {
@@ -88,17 +119,19 @@ export const Controls: React.FC = () => {
             return videoTitle;
         } catch (error) {
             console.error("Error:", error);
-            return null; 
+            return null;
         }
     };
 
     React.useEffect(() => {
         if (videoUrl) {
-            setIsPastOrClear(false); 
+            setIsPastOrClear(false);
         } else {
-            setIsPastOrClear(true); 
+            setIsPastOrClear(true);
         }
     }, [videoUrl]);
+
+    const subPlaylists = ['**Untrack**', 'Main Playlist', ...playlist.filter(track => track.subPlaylist && track.id.includes('subplaylist')).map(track => track.subPlaylist)];
 
     return (
         <div className={styles.controls}>
@@ -111,12 +144,28 @@ export const Controls: React.FC = () => {
             <button className={`${styles.iconButton} ${styles.repeatButton}`} onClick={toggleRepeat} aria-label={repeat ? "Turn off repeat" : "Turn on repeat"}>
                 <i className={`fas ${repeat ? 'fa-sync-alt' : 'fa-redo'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.favoriteButton}`} onClick={toggleFavorite} aria-label={isFavorite ? "Remove from playlist" : "Add to playlist"}> {/* Changed label */}
+            <button className={`${styles.iconButton} ${styles.favoriteButton}`} onClick={toggleFavorite} aria-label={isFavorite ? "Remove from playlist" : "Add to playlist"}>
                 <i className={`${isFavorite ? 'fas fa-star' : 'far fa-star'}`}></i>
             </button>
             <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear} aria-label={isPastOrClear ? "Paste" : "Clear"} disabled={!navigator.clipboard}>
                 <i className={`${isPastOrClear ? 'fas fa-paste' : 'fas fa-times'}`}></i>
             </button>
+            <Popup isOpen={isSubPlaylistPopupOpen} onClose={() => setIsSubPlaylistPopupOpen(false)}>
+                <h2>Select Subplaylist</h2>
+                {subPlaylists.length > 2 && (
+                    <>
+                        <select className={styles.subPlaylistSelect} value={selectedSubPlaylist} onChange={(e) => setSelectedSubPlaylist(e.target.value)}>
+                            {subPlaylists.map(subPlaylist => (
+                                <option key={subPlaylist} value={subPlaylist}>{subPlaylist}</option>
+                            ))}
+                        </select>
+                        <div className={styles.popupButtons}>
+                            <button onClick={() => handleSubPlaylistSelect(selectedSubPlaylist)}>OK</button>
+                            <button onClick={() => setIsSubPlaylistPopupOpen(false)}>Cancel</button>
+                        </div>
+                    </>
+                )}
+            </Popup>
         </div>
     );
 };

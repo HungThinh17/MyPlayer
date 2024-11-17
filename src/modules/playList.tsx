@@ -89,9 +89,9 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
                     );
                 }
                 return (
-                    <ul className={styles.playlistList} key="Main Playlist">
+                    <ul className={styles.playlistList} key={subPlaylistName}> {/* Added key prop */}
                         {tracks.map(track => (
-                            <li key={track.id} onClick={() => selectTrack(track.id)}>{track.title}</li>
+                            <li key={track.id} onClick={() => selectTrack(track.id)} className={styles.trackItem}>{track.title}</li>
                         ))}
                     </ul>
                 );
