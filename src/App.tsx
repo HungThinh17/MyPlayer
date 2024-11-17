@@ -5,7 +5,7 @@ import { Footer, Header, QRCodeModal } from './modules/headerFooter';
 import { VideoForm } from './modules/videoform';
 import { Controls } from './modules/control';
 import { YouTubePlayer } from './modules/youtubePlayer';
-import Sidebar from './modules/sidebar';
+import Sidebar, { SidebarProps } from './modules/sidebar';
 import { useState, useRef, useEffect } from 'react';
 import { TrackInfo } from './modules/trackInfo';
 
@@ -61,8 +61,8 @@ const App: React.FC = () => {
 
   return (
     <YouTubeProvider>
-      <div className={styles.app} ref={appRef}>
-        <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
+      <div className={styles.app} ref={appRef} onClick={() => setIsSidebarOpen(false)}>
+        <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} /> 
         <Header />
         <div className={styles.formContainer}>
           <VideoForm />

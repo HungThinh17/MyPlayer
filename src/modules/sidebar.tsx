@@ -3,7 +3,7 @@ import styles from '../styles/sidebar.module.css';
 import { Playlist } from './playList';
 import { useYouTubeStore } from '../store/store';
 
-interface SidebarProps {
+export interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
@@ -26,8 +26,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-      <Playlist onClose={onClose} /> {/* Pass onClose to Playlist */}
+    <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`} onClick={e => e.stopPropagation()}>
+      <Playlist onClose={onClose} />
       {showConfirm && (
         <div className={styles.confirmPopup}>
           <p>Are you sure you want to clear the playlist?</p>
