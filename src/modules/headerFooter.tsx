@@ -6,7 +6,11 @@ import { useYouTubeStore } from '../store/store';
 export const Header: React.FC = () => (
     <header className={styles.header}>
         <h1 className={styles.title}>
-            <span className={styles.titleWord}>YouTube</span>
+            <span className={styles.titleWord}>
+                <a href="https://m.youtube.com/">
+                    YouTube
+                </a>
+            </span>
             <span className={styles.titleWord}>Tracks</span>
         </h1>
     </header>

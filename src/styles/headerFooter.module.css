@@ -35,6 +35,11 @@
     transform: scale(1.1) rotate(-5deg);
 }
 
+.titleWord a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .qrCodeImage {
     width: 200px;
     /* Adjust the size as needed */
