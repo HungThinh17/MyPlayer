@@ -19,7 +19,13 @@ export const Controls: React.FC = () => {
     const [selectedSubPlaylist, setSelectedSubPlaylist] = React.useState('');
 
     const togglePlayPause = () => setIsPlaying(!isPlaying);
-    const toggleMode = () => setIsVideoMode(!isVideoMode);
+    const toggleMode = () => {
+        if (!videoId) {
+            setIsVideoMode(false);
+            return
+        }
+        setIsVideoMode(!isVideoMode);
+    }
     const toggleRepeat = () => setRepeat(!repeat);
     const toggleFavorite = () => {
         if (!videoId) {

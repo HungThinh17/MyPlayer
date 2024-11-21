@@ -34,7 +34,7 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     videoUrl: null,
     videoId: null,
     isPlaying: false,
-    isVideoMode: true,
+    isVideoMode: false,
     isFavorite: false,
     isPastOrClear: true,
     repeat: false,
