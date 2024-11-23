@@ -1,8 +1,8 @@
 {
   "name": "My Custom Player",
   "short_name": "MyPlayer",
-  "start_url": "/MyPlayer/?url=",
-  "scope": "/MyPlayer/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
@@ -14,7 +14,7 @@
     }
   ],
   "share_target": {
-    "action": "/MyPlayer/",
+    "action": "/",
     "params": {
       "title": "title",
       "text": "text",
