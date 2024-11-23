@@ -77,6 +77,7 @@ export const YouTubePlayer: React.FC = () => {
             function trackingPlayerState() {
                 let attemptCount = 0;
                 const maxAttempts = 10;
+                let lastState = null;
             
                 const intervalId = setInterval(() => {
                     if (attemptCount >= maxAttempts) {
@@ -85,21 +86,41 @@ export const YouTubePlayer: React.FC = () => {
                     }
             
                     if (playerRef.current && isPlayingRef.current) {
-                        if (playerRef.current.isMuted()) {
-                            playerRef.current.unMute();
+                        const currentState = playerRef.current.getPlayerState();
+                        
+                        // Check if player is stuck or in an unexpected state
+                        if (currentState !== (window as any).YT.PlayerState.PLAYING) {
+                            // Try to recover playback
+                            if (playerRef.current.isMuted()) {
+                                playerRef.current.unMute();
+                            }
+                            
+                            // Attempt to refresh the player if stuck
+                            try {
+                                const currentTime = playerRef.current.getCurrentTime();
+                                playerRef.current.seekTo(currentTime, true);
+                                playerRef.current.playVideo();
+                            } catch (error) {
+                                console.warn('Error refreshing player:', error);
+                            }
                         }
             
-                        if (playerRef.current.getPlayerState() === (window as any).YT.PlayerState.PAUSED) {
-                            playerRef.current.playVideo();
-                        }
-            
-                        attemptCount++;
+                        // Store the last known state
+                        lastState = currentState;
                     }
-                }, 300);
             
-                // Return a cleanup function to clear the interval when component unmounts or max attempts are reached
+                    attemptCount++;
+                }, 1000); // Increased interval to reduce resource usage
+            
+                // Clean up interval when visibility changes back
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') {
+                        clearInterval(intervalId);
+                    }
+                }, { once: true });
+            
                 return () => clearInterval(intervalId);
-            }
+            }            
         };
 
         return () => {
@@ -113,6 +134,24 @@ export const YouTubePlayer: React.FC = () => {
         if (playerRef.current && videoId) {
             playerRef.current.loadVideoById(videoId);
         }
+
+        // Add a periodic check for player health
+        const healthCheckInterval = setInterval(() => {
+            if (playerRef.current && isPlayingRef.current) {
+                try {
+                    const state = playerRef.current.getPlayerState();
+                    if (state === -1 || state === (window as any).YT.PlayerState.UNSTARTED) {
+                        // Reload the video if player is in an error state
+                        playerRef.current.loadVideoById(videoId, 
+                            playerRef.current.getCurrentTime());
+                    }
+                } catch (error) {
+                    console.warn('Player health check failed:', error);
+                }
+            }
+        }, 5000);
+    
+        return () => clearInterval(healthCheckInterval);
     }, [videoId]);
 
     React.useEffect(() => {
