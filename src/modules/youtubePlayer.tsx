@@ -7,6 +7,7 @@ import SpinningDiskEffect from './visualEffect';
 
 export const YouTubePlayer: React.FC = () => {
     const { isVideoMode, videoId, isPlaying, repeat, setIsPlaying, setCurrentVideo } = useYouTubeStore();
+    const [savedVolume, setSavedVolume] = React.useState<number>(100);
     const playerRef = React.useRef<any>(null);
     const repeatRef = React.useRef(repeat);
     const isPlayingRef = React.useRef(isPlaying);
@@ -29,9 +30,10 @@ export const YouTubePlayer: React.FC = () => {
                     controls: 1,
                     modestbranding: 1,
                     showinfo: 0,
-                    fs: 0,
+                    fs: 1,
                     rel: 0,
-                    playsinline: 1
+                    playsinline: 1,
+                    volume: savedVolume
                 },
                 events: {
                     onReady: (event: any) => {
@@ -60,16 +62,24 @@ export const YouTubePlayer: React.FC = () => {
                                 console.log('Video Playing', videoId);
                                 const videoData = event.target.getVideoData();
                                 console.log('Video Data:', videoData);
-                                setCurrentVideo({id: videoId || '', title: videoData.title});
+                                setCurrentVideo({ id: videoId || '', title: videoData.title });
                                 break;
                         }
                     }
-                    
+
                 }
             });
 
             document.onvisibilitychange = () => {
                 if (document.visibilityState === 'hidden') {
+                    // Store current volume before going to background
+                    if (playerRef.current) {
+                        const currentVolume = playerRef.current.getVolume();
+                        playerRef.current.setVolume(currentVolume); // Ensure volume is maintained
+                        if (playerRef.current.isMuted()) {
+                            playerRef.current.unMute();
+                        }
+                    }
                     trackingPlayerState();
                 }
             };
@@ -78,49 +88,55 @@ export const YouTubePlayer: React.FC = () => {
                 let attemptCount = 0;
                 const maxAttempts = 10;
                 let lastState = null;
-            
+
                 const intervalId = setInterval(() => {
                     if (attemptCount >= maxAttempts) {
                         clearInterval(intervalId);
                         return;
                     }
-            
+
                     if (playerRef.current && isPlayingRef.current) {
                         const currentState = playerRef.current.getPlayerState();
-                        
+
                         // Check if player is stuck or in an unexpected state
                         if (currentState !== (window as any).YT.PlayerState.PLAYING) {
-                            // Try to recover playback
+                            // Enhanced recovery logic
                             if (playerRef.current.isMuted()) {
                                 playerRef.current.unMute();
                             }
-                            
-                            // Attempt to refresh the player if stuck
+
                             try {
                                 const currentTime = playerRef.current.getCurrentTime();
+                                const currentVolume = playerRef.current.getVolume();
                                 playerRef.current.seekTo(currentTime, true);
                                 playerRef.current.playVideo();
+                                playerRef.current.setVolume(currentVolume);
                             } catch (error) {
                                 console.warn('Error refreshing player:', error);
                             }
                         }
-            
-                        // Store the last known state
+
                         lastState = currentState;
                     }
-            
+
                     attemptCount++;
-                }, 1000); // Increased interval to reduce resource usage
-            
+                }, 1000);
+
                 // Clean up interval when visibility changes back
                 document.addEventListener('visibilitychange', () => {
                     if (document.visibilityState === 'visible') {
                         clearInterval(intervalId);
+                        // Ensure sound is restored when coming back to foreground
+                        if (playerRef.current && isPlayingRef.current) {
+                            if (playerRef.current.isMuted()) {
+                                playerRef.current.unMute();
+                            }
+                        }
                     }
                 }, { once: true });
-            
+
                 return () => clearInterval(intervalId);
-            }            
+            }
         };
 
         return () => {
@@ -142,7 +158,7 @@ export const YouTubePlayer: React.FC = () => {
                     const state = playerRef.current.getPlayerState();
                     if (state === -1 || state === (window as any).YT.PlayerState.UNSTARTED) {
                         // Reload the video if player is in an error state
-                        playerRef.current.loadVideoById(videoId, 
+                        playerRef.current.loadVideoById(videoId,
                             playerRef.current.getCurrentTime());
                     }
                 } catch (error) {
@@ -150,7 +166,7 @@ export const YouTubePlayer: React.FC = () => {
                 }
             }
         }, 5000);
-    
+
         return () => clearInterval(healthCheckInterval);
     }, [videoId]);
 

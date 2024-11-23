@@ -9,7 +9,7 @@ module.exports = (env, argv) => {
     entry: './src/index.tsx',
     output: {
       path: path.resolve('dist'),
-      filename: isProduction ? '[name].[contenthash].js' : '[name].js',
+      filename: '[name].js',
       publicPath: isProduction ? 'dist/' : '/',
     },
     resolve: {

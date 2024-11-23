@@ -1,11 +1,10 @@
 const CACHE_NAME = 'my-player-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/resources/hiphopbackground.jpeg',
-  '/resources/icon.png',
+  '/dist/',
+  '/dist/index.html',
+  '/dist/main.js',
+  '/dist/resources/hiphopbackground.jpeg',
+  '/dist/resources/icon.png',
   'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css',
   'https://www.youtube.com/iframe_api'
 ];
