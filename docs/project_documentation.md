@@ -23,7 +23,7 @@ The project is organized into the following directories:
     * **App.tsx:** The main application component.
     * **index.tsx:** Entry point of the application.
 * **resources:** Contains images and other assets.
-* **archive:** Contains archived files (likely build artifacts).
+* **dist:** Contains archived files (likely build artifacts).
 * **electron:** Contains Electron related files (suggests desktop application capabilities).
 
 

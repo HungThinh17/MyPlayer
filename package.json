@@ -5,9 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rimraf dist && rimraf archive",
-    "build": "rimraf archive && webpack --mode production",
-    "build-dev": "rimraf dist && webpack --mode development",
+    "clean": "rimraf dist",
+    "build": "npm run clean && webpack --mode production",
+    "build-dev": "npm run clean && webpack --mode development",
     "start": "webpack serve --mode development",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
@@ -37,7 +37,7 @@
     "files": [
       "index.html",
       "main.js",
-      "archive/**/*"
+      "dist/**/*"
     ]
   },
   "keywords": [],

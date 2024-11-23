@@ -8,9 +8,9 @@ module.exports = (env, argv) => {
   return {
     entry: './src/index.tsx',
     output: {
-      path: path.resolve(__dirname, isProduction ? 'archive' : 'dist'),
+      path: path.resolve('dist'),
       filename: isProduction ? '[name].[contenthash].js' : '[name].js',
-      publicPath: isProduction ? 'archive/' : '/',
+      publicPath: isProduction ? 'dist/' : '/',
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -33,6 +33,9 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './src/index.html',
         filename: isProduction ? '../index.html' : 'index.html',
+        templateParameters: {
+          isProduction: isProduction
+        }
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -42,6 +45,7 @@ module.exports = (env, argv) => {
         ]
       })
     ],
+
     devServer: {
       static: {
         directory: path.join(__dirname, 'dist'),
@@ -50,7 +54,11 @@ module.exports = (env, argv) => {
       port: 9000,
       hot: true,
     },
-    devtool: isProduction ? 'source-map' : 'eval-cheap-module-source-map',
+    devtool: isProduction ? false : 'eval-cheap-module-source-map',
+    performance: isProduction ? {
+      maxAssetSize: 400000, // Increase size limit (e.g., 300 KiB)
+      hints: 'warning',     // Keep it as a warning instead of an error
+    }: false,
     optimization: {
       minimize: isProduction,
       splitChunks: {
