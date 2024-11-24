@@ -26,7 +26,7 @@ export const YouTubePlayer: React.FC = () => {
                 width: '640',
                 videoId: videoId || '',
                 playerVars: {
-                    autoplay: 1,
+                    autoplay: 0,
                     controls: 1,
                     modestbranding: 1,
                     showinfo: 0,
@@ -51,7 +51,7 @@ export const YouTubePlayer: React.FC = () => {
                                     if (document.visibilityState === 'visible') {
                                         setIsPlaying(false);
                                     }
-                                }, 300);
+                                }, 500);
                                 break;
                             case (window as any).YT.PlayerState.PLAYING:
                                 setIsPlaying(true);
@@ -59,10 +59,12 @@ export const YouTubePlayer: React.FC = () => {
                                 if (event.target.isMuted()) {
                                     event.target.unMute();
                                 }
-                                console.log('Video Playing', videoId);
+
                                 const videoData = event.target.getVideoData();
-                                console.log('Video Data:', videoData);
                                 setCurrentVideo({ id: videoId || '', title: videoData.title });
+
+                                const currentVolume = playerRef.current.getVolume();
+                                setSavedVolume(currentVolume);
                                 break;
                         }
                     }
@@ -72,14 +74,6 @@ export const YouTubePlayer: React.FC = () => {
 
             document.onvisibilitychange = () => {
                 if (document.visibilityState === 'hidden') {
-                    // Store current volume before going to background
-                    if (playerRef.current) {
-                        const currentVolume = playerRef.current.getVolume();
-                        playerRef.current.setVolume(currentVolume); // Ensure volume is maintained
-                        if (playerRef.current.isMuted()) {
-                            playerRef.current.unMute();
-                        }
-                    }
                     trackingPlayerState();
                 }
             };
@@ -87,7 +81,6 @@ export const YouTubePlayer: React.FC = () => {
             function trackingPlayerState() {
                 let attemptCount = 0;
                 const maxAttempts = 10;
-                let lastState = null;
 
                 const intervalId = setInterval(() => {
                     if (attemptCount >= maxAttempts) {
@@ -99,41 +92,26 @@ export const YouTubePlayer: React.FC = () => {
                         const currentState = playerRef.current.getPlayerState();
 
                         // Check if player is stuck or in an unexpected state
-                        if (currentState !== (window as any).YT.PlayerState.PLAYING) {
-                            // Enhanced recovery logic
-                            if (playerRef.current.isMuted()) {
-                                playerRef.current.unMute();
-                            }
-
+                        if ((currentState !== (window as any).YT.PlayerState.PLAYING) &&
+                            (document.visibilityState === 'hidden')) {
                             try {
                                 const currentTime = playerRef.current.getCurrentTime();
-                                const currentVolume = playerRef.current.getVolume();
                                 playerRef.current.seekTo(currentTime, true);
                                 playerRef.current.playVideo();
-                                playerRef.current.setVolume(currentVolume);
                             } catch (error) {
                                 console.warn('Error refreshing player:', error);
                             }
                         }
 
-                        lastState = currentState;
+                        // Enhanced recovery logic
+                        if (playerRef.current.isMuted()) {
+                            playerRef.current.unMute();
+                        }
+                        playerRef.current.setVolume(savedVolume);
                     }
 
                     attemptCount++;
-                }, 1000);
-
-                // Clean up interval when visibility changes back
-                document.addEventListener('visibilitychange', () => {
-                    if (document.visibilityState === 'visible') {
-                        clearInterval(intervalId);
-                        // Ensure sound is restored when coming back to foreground
-                        if (playerRef.current && isPlayingRef.current) {
-                            if (playerRef.current.isMuted()) {
-                                playerRef.current.unMute();
-                            }
-                        }
-                    }
-                }, { once: true });
+                }, 500);
 
                 return () => clearInterval(intervalId);
             }
