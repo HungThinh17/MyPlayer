@@ -47,15 +47,11 @@ export const YouTubePlayer: React.FC = () => {
                                 }
                                 break;
                             case (window as any).YT.PlayerState.PAUSED:
-                                setTimeout(() => {
-                                    if (document.visibilityState === 'visible') {
-                                        setIsPlaying(false);
-                                    }
-                                }, 500);
+                                console.log('__Video Paused');
+                                setIsPlaying(false);
                                 break;
                             case (window as any).YT.PlayerState.PLAYING:
-                                setIsPlaying(true);
-                                // If the video is playing and it's muted, unmute it
+                                console.log('__Video Playing');
                                 if (event.target.isMuted()) {
                                     event.target.unMute();
                                 }
@@ -65,6 +61,7 @@ export const YouTubePlayer: React.FC = () => {
 
                                 const currentVolume = playerRef.current.getVolume();
                                 setSavedVolume(currentVolume);
+                                setIsPlaying(true);
                                 break;
                         }
                     }
@@ -74,13 +71,15 @@ export const YouTubePlayer: React.FC = () => {
 
             document.onvisibilitychange = () => {
                 if (document.visibilityState === 'hidden') {
-                    trackingPlayerState();
+                    if (isPlayingRef.current) {
+                        trackingPlayerState();
+                    }
                 }
             };
 
             function trackingPlayerState() {
                 let attemptCount = 0;
-                const maxAttempts = 10;
+                const maxAttempts = 5;
 
                 const intervalId = setInterval(() => {
                     if (attemptCount >= maxAttempts) {
@@ -88,18 +87,16 @@ export const YouTubePlayer: React.FC = () => {
                         return;
                     }
 
-                    if (playerRef.current && isPlayingRef.current) {
+                    if (playerRef.current) {
                         const currentState = playerRef.current.getPlayerState();
-
-                        // Check if player is stuck or in an unexpected state
-                        if ((currentState !== (window as any).YT.PlayerState.PLAYING) &&
-                            (document.visibilityState === 'hidden')) {
+                        if (currentState !== (window as any).YT.PlayerState.PLAYING) {
                             try {
                                 const currentTime = playerRef.current.getCurrentTime();
                                 playerRef.current.seekTo(currentTime, true);
                                 playerRef.current.playVideo();
+                                setIsPlaying(true);
                             } catch (error) {
-                                console.warn('Error refreshing player:', error);
+                                console.warn('__Error refreshing player:', error);
                             }
                         }
 
@@ -108,6 +105,7 @@ export const YouTubePlayer: React.FC = () => {
                             playerRef.current.unMute();
                         }
                         playerRef.current.setVolume(savedVolume);
+                        console.log('__Player is now playing.');
                     }
 
                     attemptCount++;
@@ -149,17 +147,27 @@ export const YouTubePlayer: React.FC = () => {
     }, [videoId]);
 
     React.useEffect(() => {
-        repeatRef.current = repeat;
         isPlayingRef.current = isPlaying;
 
         if (playerRef.current) {
+            const currentState = playerRef.current.getPlayerState();
             if (isPlaying) {
-                playerRef.current.playVideo();
+                if (currentState !== (window as any).YT.PlayerState.PLAYING) {
+                    playerRef.current.playVideo();
+                    console.log('__Player playing.');
+                }
             } else {
-                playerRef.current.pauseVideo();
+                if (currentState !== (window as any).YT.PlayerState.PAUSED) {
+                    playerRef.current.pauseVideo();
+                    console.log('__Player paused.');
+                }
             }
         }
-    }, [isPlaying, repeat]);
+    }, [isPlaying]);
+
+    React.useEffect(() => {
+        repeatRef.current = repeat;
+    }, [repeat]);
 
     React.useEffect(() => {
         const player = document.getElementById('youtubePlayer');
