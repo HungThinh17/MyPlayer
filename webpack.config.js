@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const setupMiddlewares = require('./webpack.devserver.js');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -53,6 +54,7 @@ module.exports = (env, argv) => {
       compress: true,
       port: 9000,
       hot: true,
+      setupMiddlewares,
     },
     devtool: isProduction ? false : 'eval-cheap-module-source-map',
     performance: isProduction ? {
