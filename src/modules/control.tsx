@@ -83,19 +83,25 @@ export const Controls: React.FC = () => {
 
     const handlePasteOrClear = () => {
         if (isPastOrClear) {
-            if (navigator.clipboard) {
-                navigator.clipboard.readText().then(text => {
-                    if (text) {
-                        console.log('Pasted Text:', text);
-                        setVideoUrl(text);
-                        setIsPastOrClear(false);
-                    }
-                }).catch(err => {
-                    console.error('Failed to read clipboard contents: ', err);
-                });
-            } else {
-                // Do nothing if Clipboard API is not supported
+            if (!navigator.clipboard) {
+                alert('Clipboard is not available in this browser.');
+                return;
             }
+
+            navigator.clipboard.readText()
+                .then(text => {
+                    if (!text) {
+                        alert('Clipboard is empty or unavailable.');
+                        return;
+                    }
+                    console.log('Pasted Text:', text);
+                    setVideoUrl(text);
+                    setIsPastOrClear(false);
+                })
+                .catch(err => {
+                    console.error('Failed to read clipboard contents: ', err);
+                    alert('Failed to read from clipboard. Please paste manually.');
+                });
         } else {
             setVideoUrl('');
             setIsPastOrClear(true);
@@ -153,7 +159,7 @@ export const Controls: React.FC = () => {
             <button className={`${styles.iconButton} ${styles.favoriteButton}`} onClick={toggleFavorite} aria-label={isFavorite ? "Remove from playlist" : "Add to playlist"}>
                 <i className={`${isFavorite ? 'fas fa-star' : 'far fa-star'}`}></i>
             </button>
-            <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear} aria-label={isPastOrClear ? "Paste" : "Clear"} disabled={!navigator.clipboard}>
+            <button className={`${styles.iconButton} ${styles.pasteOrClearButton}`} onClick={handlePasteOrClear} aria-label={isPastOrClear ? "Paste" : "Clear"}>
                 <i className={`${isPastOrClear ? 'fas fa-paste' : 'fas fa-times'}`}></i>
             </button>
             <Popup isOpen={isSubPlaylistPopupOpen} onClose={() => setIsSubPlaylistPopupOpen(false)}>

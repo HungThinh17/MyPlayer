@@ -54,6 +54,30 @@
     background-color: #f0f0f0;
 }
 
+.currentTrackItem {
+    background-color: #dfe6ff;
+}
+.playlistItemContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.playlistItemTitle {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlistItemActionsButton {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+}
+
 .fancyPopup {
   background-color: #f9f9f9; /* Lighter background */
   padding: 10px;
@@ -101,4 +125,23 @@
 
 .subPlaylistExpandCollapseButton {
     margin-left: 10px; 
+}
+
+.subPlaylistHeaderActions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.expandIcon {
+    cursor: pointer;
+}
+
+.subPlaylistRemoveButton {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    color: #f44336;
 }

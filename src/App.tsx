@@ -36,13 +36,13 @@ const App: React.FC = () => {
       document.removeEventListener('touchend', handleTouchEnd);
     };
 
-    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
   };
 
   useEffect(() => {
     if (appRef.current) {
-      appRef.current.addEventListener('touchstart', handleTouchStart);
+      appRef.current.addEventListener('touchstart', handleTouchStart, { passive: false });
       appRef.current.addEventListener('mouseover', (e: MouseEvent) => {
         if (e.clientX < 50 && !isSidebarOpen) {
           toggleSidebar();
@@ -63,7 +63,7 @@ const App: React.FC = () => {
     <YouTubeProvider>
       <div className={styles.app} ref={appRef} onClick={() => setIsSidebarOpen(false)} onDoubleClick={()=>setIsSidebarOpen(true)}>
         <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} /> 
-        <Header />
+        <Header onToggleSidebar={toggleSidebar} />
         <div className={styles.formContainer}>
           <VideoForm />
           <Controls />
