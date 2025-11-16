@@ -57,6 +57,7 @@
 .currentTrackItem {
     background-color: #dfe6ff;
 }
+
 .playlistItemContent {
     display: flex;
     align-items: center;
@@ -97,11 +98,13 @@
 
 .popupButtons {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
 }
 
 .popupButtons button {
-  margin-left: 10px;
+  margin: 0;
   padding: 8px 15px;
   border: none;
   border-radius: 4px;
@@ -119,8 +122,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between; /* Distribute space between items */
-    margin-bottom: 5px;
-    border-top: 3px solid #ddd;
+    margin-bottom: 2px;
+    border-bottom: 3px solid #ddd;
 }
 
 .subPlaylistExpandCollapseButton {
@@ -144,4 +147,12 @@
     font-size: 14px;
     padding: 2px 4px;
     color: #f44336;
+}
+
+.subPlaylistTitle {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
 }
