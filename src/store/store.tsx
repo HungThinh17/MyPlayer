@@ -17,6 +17,8 @@ interface YouTubeActions {
   setVideoUrl: (url: string | null) => void;
   setVideoId: (id: string | null) => void;
   setIsPlaying: (isPlaying: boolean) => void;
+  playNextTrack: () => void;
+  playPreviousTrack: () => void;
   setIsVideoMode: (isVideoMode: boolean) => void;
   setIsFavorite: (isFavorite: boolean) => void;
   setIsPastOrClear: (isPastOrClear: boolean) => void;
@@ -72,6 +74,43 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setVideoUrl: (url: string | null) => setState((prev) => ({ ...prev, videoUrl: url })),
     setVideoId: (id: string | null) => setState((prev) => ({ ...prev, videoId: id })),
     setIsPlaying: (isPlaying: boolean) => setState((prev) => ({ ...prev, isPlaying })),
+    playNextTrack: () =>
+      setState((prev) => {
+        const tracks = prev.playlist.filter((track) => track.id !== 'subplaylist');
+        if (tracks.length === 0) {
+          return prev;
+        }
+
+        const currentId = prev.videoId || prev.currentVideo?.id || tracks[0].id;
+        const currentIndex = tracks.findIndex((track) => track.id === currentId);
+        const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % tracks.length;
+        const nextId = tracks[nextIndex].id;
+
+        return {
+          ...prev,
+          videoId: nextId,
+          isPlaying: true,
+        };
+      }),
+    playPreviousTrack: () =>
+      setState((prev) => {
+        const tracks = prev.playlist.filter((track) => track.id !== 'subplaylist');
+        if (tracks.length === 0) {
+          return prev;
+        }
+
+        const currentId = prev.videoId || prev.currentVideo?.id || tracks[0].id;
+        const currentIndex = tracks.findIndex((track) => track.id === currentId);
+        const previousIndex =
+          currentIndex === -1 ? 0 : (currentIndex - 1 + tracks.length) % tracks.length;
+        const previousId = tracks[previousIndex].id;
+
+        return {
+          ...prev,
+          videoId: previousId,
+          isPlaying: true,
+        };
+      }),
     setIsVideoMode: (isVideoMode: boolean) => setState((prev) => ({ ...prev, isVideoMode })),
     setIsFavorite: (isFavorite: boolean) => setState((prev) => ({ ...prev, isFavorite })),
     setIsPastOrClear: (isPastOrClear: boolean) => setState((prev) => ({ ...prev, isPastOrClear })),
