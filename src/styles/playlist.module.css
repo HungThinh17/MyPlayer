@@ -54,6 +54,9 @@
     background-color: #f0f0f0;
 }
 
+.currentTrackItem {
+    background-color: #dfe6ff;
+}
 .playlistItemContent {
     display: flex;
     align-items: center;

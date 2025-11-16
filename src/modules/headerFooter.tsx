@@ -48,6 +48,9 @@ export const Footer: React.FC = () => {
                     Show QR Code
                 </span>
             </p>
+            <p className={styles.backgroundHint}>
+                Note: Playback needs internet; background support depends on your browser/OS.
+            </p>
         </footer>
     );
 };

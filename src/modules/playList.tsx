@@ -8,7 +8,7 @@ interface PlaylistProps {
 }
 
 export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
-  const { playlist, setVideoId, setIsPlaying, setPlaylist } = useYouTubeStore();
+  const { playlist, setVideoId, setIsPlaying, setPlaylist, videoId, currentVideo } = useYouTubeStore();
   const [newSubPlaylistName, setNewSubPlaylistName] = React.useState('');
   const [isPopupOpen, setIsPopupOpen] = React.useState(false);
   const [expandedSubPlaylists, setExpandedSubPlaylists] = React.useState<{ [key: string]: boolean }>({});
@@ -182,16 +182,19 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
                 <ul className={styles.playlistList}>
                   {tracks
                     .filter((track: PlaylistTrack) => track.id !== 'subplaylist')
-                    .map((track: PlaylistTrack) => (
-                      <li
-                        key={track.id}
-                        onClick={() => selectTrack(track.id)}
-                        onContextMenu={(e) => openTrackActions(e, track.id)}
-                        className={styles.trackItem}
-                      >
-                        <span className={styles.playlistItemTitle}>{track.title}</span>
-                      </li>
-                    ))}
+                    .map((track: PlaylistTrack) => {
+                      const isCurrent = track.id === videoId || track.id === currentVideo?.id;
+                      return (
+                        <li
+                          key={track.id}
+                          onClick={() => selectTrack(track.id)}
+                          onContextMenu={(e) => openTrackActions(e, track.id)}
+                          className={`${styles.trackItem} ${isCurrent ? styles.currentTrackItem : ''}`}
+                        >
+                          <span className={styles.playlistItemTitle}>{track.title}</span>
+                        </li>
+                      );
+                    })}
                 </ul>
               )}
             </div>
@@ -201,16 +204,19 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
           <ul className={styles.playlistList} key={subPlaylistName}>
             {tracks
               .filter((track: PlaylistTrack) => track.id !== 'subplaylist')
-              .map((track: PlaylistTrack) => (
-                <li
-                  key={track.id}
-                  onClick={() => selectTrack(track.id)}
-                  onContextMenu={(e) => openTrackActions(e, track.id)}
-                  className={styles.trackItem}
-                >
-                  <span className={styles.playlistItemTitle}>{track.title}</span>
-                </li>
-              ))}
+              .map((track: PlaylistTrack) => {
+                const isCurrent = track.id === videoId || track.id === currentVideo?.id;
+                return (
+                  <li
+                    key={track.id}
+                    onClick={() => selectTrack(track.id)}
+                    onContextMenu={(e) => openTrackActions(e, track.id)}
+                    className={`${styles.trackItem} ${isCurrent ? styles.currentTrackItem : ''}`}
+                  >
+                        <span className={styles.playlistItemTitle}>{track.title}</span>
+                  </li>
+                );
+              })}
           </ul>
         );
       })}
@@ -242,4 +248,3 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
     </div>
   );
 };
-

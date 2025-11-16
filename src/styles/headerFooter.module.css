@@ -61,7 +61,7 @@
     left: 0;
     right: 0;
     background-color: rgba(255, 255, 255, 0.8);
-    padding: 0;
+    padding: 0 4px 4px;
     text-align: center;
     flex-shrink: 0;
 }
@@ -70,6 +70,12 @@
     cursor: pointer;
     text-decoration: underline;
     color: #084126;
+}
+
+.backgroundHint {
+    font-size: 0.75rem;
+    color: #555;
+    margin-top: 2px;
 }
 
 .qrCodeModal {
