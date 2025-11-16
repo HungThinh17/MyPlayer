@@ -68,14 +68,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`} onClick={e => e.stopPropagation()}>
-      <Playlist onClose={onClose} />
-      {showConfirm && (
-        <div className={styles.confirmPopup}>
-          <p>Are you sure you want to clear the playlist?</p>
-          <button onClick={handleConfirmClear}>Yes</button>
-          <button onClick={handleCancelClear}>No</button>
-        </div>
-      )}
+      <div className={styles.sidebarContent}>
+        <Playlist onClose={onClose} />
+        {showConfirm && (
+          <div className={styles.confirmPopup}>
+            <p>Are you sure you want to clear the playlist?</p>
+            <button onClick={handleConfirmClear}>Yes</button>
+            <button onClick={handleCancelClear}>No</button>
+          </div>
+        )}
+      </div>
       <div className={styles.sidebarActions}>
         <button className={styles.clearButton} onClick={handleClearPlaylist}>
           Clear Playlist
