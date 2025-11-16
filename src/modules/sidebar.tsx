@@ -10,7 +10,7 @@ export interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const [showConfirm, setShowConfirm] = useState(false);
-  const { clearPlaylist } = useYouTubeStore();
+  const { clearPlaylist, playlist, setPlaylist } = useYouTubeStore();
 
   const handleClearPlaylist = () => {
     setShowConfirm(true);
@@ -25,6 +25,47 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     setShowConfirm(false);
   };
 
+  const handleExportPlaylist = () => {
+    if (!playlist || playlist.length === 0) {
+      return;
+    }
+
+    const data = JSON.stringify(playlist, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'myplayer-playlist.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportPlaylist = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const text = reader.result as string;
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) {
+          setPlaylist(parsed);
+        }
+      } catch {
+        // Ignore invalid files
+      } finally {
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`} onClick={e => e.stopPropagation()}>
       <Playlist onClose={onClose} />
@@ -35,9 +76,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <button onClick={handleCancelClear}>No</button>
         </div>
       )}
-      <button className={styles.clearButton} onClick={handleClearPlaylist}>
-        Clear Playlist
-      </button>
+      <div className={styles.sidebarActions}>
+        <button className={styles.clearButton} onClick={handleClearPlaylist}>
+          Clear Playlist
+        </button>
+        <button className={styles.clearButton} onClick={handleExportPlaylist}>
+          Export
+        </button>
+        <label className={styles.clearButton}>
+          Import
+          <input
+            type="file"
+            accept="application/json"
+            style={{ display: 'none' }}
+            onChange={handleImportPlaylist}
+          />
+        </label>
+      </div>
     </div>
   );
 };

@@ -2,19 +2,36 @@ import * as React from 'react';
 import styles from '../styles/headerFooter.module.css';
 import { useYouTubeStore } from '../store/store';
 
+export interface HeaderProps {
+    onToggleSidebar?: () => void;
+}
 
-export const Header: React.FC = () => (
-    <header className={styles.header}>
-        <h1 className={styles.title}>
-            <span className={styles.titleWord}>
-                <a href="https://m.youtube.com/">
-                    YouTube
-                </a>
-            </span>
-            <span className={styles.titleWord}>Tracks</span>
-        </h1>
-    </header>
-);
+export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
+    const handleTracksClick = (event: React.MouseEvent<HTMLSpanElement>) => {
+        event.stopPropagation();
+        if (onToggleSidebar) {
+            onToggleSidebar();
+        }
+    };
+
+    return (
+        <header className={styles.header}>
+            <h1 className={styles.title}>
+                <span className={styles.titleWord}>
+                    <a href="https://m.youtube.com/">
+                        YouTube
+                    </a>
+                </span>
+                <span
+                    className={`${styles.titleWord} ${styles.titleToggle}`}
+                    onClick={handleTracksClick}
+                >
+                    Tracks
+                </span>
+            </h1>
+        </header>
+    );
+};
 
 export const Footer: React.FC = () => {
     const { setIsQRCodeModalVisible } = useYouTubeStore();

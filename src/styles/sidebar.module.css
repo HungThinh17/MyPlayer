@@ -36,18 +36,24 @@
   color: #333;
 }
 
-
-.clearButton {
+.sidebarActions {
   position: absolute;
   bottom: 20px;
   left: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clearButton {
   padding: 10px 20px;
   background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: calc(100% - 40px);
+  width: 100%;
   box-sizing: border-box;
   text-align: center;
 }
@@ -61,6 +67,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 200;
 }
 
 .confirmPopup p {

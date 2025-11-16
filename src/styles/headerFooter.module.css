@@ -40,6 +40,10 @@
     color: inherit;
 }
 
+.titleToggle {
+    cursor: pointer;
+}
+
 .qrCodeImage {
     width: 200px;
     /* Adjust the size as needed */
