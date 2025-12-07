@@ -5,6 +5,29 @@
     /* IE 10 and IE 11 */
     user-select: none;
     /* Standard syntax */
+
+    /* Dark theme (default) */
+    --bg-main: #0b0d10;
+    --bg-main-soft: #0e1117;
+    --bg-elevated: #11151c;
+    --fg-primary: #f5f5f5;
+    --fg-muted: rgba(245, 245, 245, 0.7);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --accent: #4caf50;
+    --accent-soft: rgba(76, 175, 80, 0.2);
+    --danger: #f44336;
+}
+
+:root[data-theme='light'] {
+    --bg-main: #f3f4f6;
+    --bg-main-soft: #ffffff;
+    --bg-elevated: #ffffff;
+    --fg-primary: #111827;
+    --fg-muted: rgba(17, 24, 39, 0.7);
+    --border-subtle: rgba(15, 23, 42, 0.08);
+    --accent: #3c82f6;
+    --accent-soft: rgba(60, 130, 246, 0.16);
+    --danger: #d32f2f;
 }
 
 .app {
@@ -13,14 +36,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     justify-content: flex-start;
-    background: url('../../resources/hiphopbackground.jpeg') no-repeat center center fixed;
-    background-size: cover;
+    background: linear-gradient(135deg, var(--bg-main), var(--bg-main-soft));
     font-family: 'Arial', sans-serif;
-    color: #084126;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--fg-primary);
     text-align: center;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .title {
@@ -32,76 +56,97 @@
 }
 
 .formContainer {
-    margin: 5px 0;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    margin: 8px 0 4px;
+    padding: 16px 18px;
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-subtle);
     width: 90%;
-    max-width: 600px;
+    max-width: 640px;
 }
 
 .videoForm {
     display: flex;
     width: 100%;
+    align-items: center;
 }
 
 .youtubeUrl {
-    flex-grow: 1;
-    padding: 10px 15px;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px 0 0 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    background: rgba(255, 255, 255, 0.9);
-    color: #000000;
+    flex: 1;
+    padding: 9px 10px;
+    font-size: 15px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px 0 0 6px;
+    background: transparent;
+    color: var(--fg-primary);
     box-sizing: border-box;
     line-height: 1.5;
-    height: 50px;
+    height: 40px;
+    outline: none;
 }
 
 .submitButton {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 0 8px 8px 0;
+    padding: 0 14px;
+    border: 1px solid var(--border-subtle);
+    border-left: none;
+    border-radius: 0 6px 6px 0;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.2);
-    color: #ffffff;
+    background: var(--accent);
+    color: var(--fg-primary);
     font-size: 18px;
-    transition: background 0.3s;
+    transition: background 0.2s ease, transform 0.1s ease;
     box-sizing: border-box;
-    line-height: 1.5;
-    height: 50px;
+    line-height: 1;
+    height: 40px;
 }
 
 .submitButton:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: #43a047;
+    transform: translateY(-1px);
 }
 
 .controls {
-    margin-top: 5px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .iconButton {
-    display: inline-block;
-    padding: 15px;
-    margin: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 4px;
     border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.2);
-    color: #ffffff;
+    background: transparent;
+    color: var(--fg-primary);
     font-size: 16px;
-    transition: background 0.3s;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .iconButton:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
 }
 
 .iconButton:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.playPauseButton {
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    color: var(--fg-primary);
+}
+
+.playPauseButton:hover {
+    background: #43a047;
 }
 
 .subPlaylistSelect {
@@ -144,4 +189,116 @@
     background-color: #f44336;
     /* Red button */
     color: white;
+}
+
+.mainLayout {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 16px 80px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.playerSection {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.playlistSection {
+    width: 100%;
+    max-width: 480px;
+    margin: 5px auto 0;
+    padding: 14px 16px;
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-subtle);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playlistActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.playlistActionButton {
+    padding: 0;
+    border-radius: 0;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.playlistActionButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.playlistConfirm {
+    background-color: var(--bg-elevated);
+    border-radius: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-subtle);
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+.playlistConfirmButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.playlistConfirmButtons button {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    background-color: var(--accent);
+    color: var(--fg-primary);
+}
+
+.playlistConfirmButtons button:last-child {
+    background-color: var(--danger);
+}
+
+.playlistScrollArea {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin-top: 4px;
+}
+
+@media (min-width: 1024px) {
+    .mainLayout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        column-gap: 16px;
+        align-items: flex-start;
+    }
+
+    .playlistSection {
+        max-height: calc(100vh - 220px);
+    }
 }

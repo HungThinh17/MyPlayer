@@ -1,38 +1,41 @@
-/* styles.module.css */
-
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-
 .header {
-    text-align: center;
-    padding: 20px 0;
+    padding: 16px 0 8px;
+}
+
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
 }
 
 .title {
-    display: inline-flex;
-    width: 100%;
-    font-family: 'Permanent Marker', cursive;
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: #333;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    color: #f5f5f5;
+    text-shadow: none;
     margin: 0;
 }
 
 .titleWord {
-    display: inline-flex;
-    width: 100%;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.titleWord:first-child {
-    color: #e73c3c;
-}
-
-.titleWord:last-child {
-    color: #3f34db;
+    display: inline-block;
+    margin: 0 4px;
+    transition: color 0.2s ease;
 }
 
 .titleWord:hover {
-    transform: scale(1.1) rotate(-5deg);
+    color: var(--accent);
 }
 
 .titleWord a {
@@ -42,6 +45,74 @@
 
 .titleToggle {
     cursor: pointer;
+}
+
+.youtubeWord {
+    color: #ff0000;
+    font-weight: 600;
+}
+
+.tracksWord {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.youtubeIconButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.16), transparent 55%);
+    text-decoration: none;
+    color: #ff4b4b;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease, color 0.2s ease;
+}
+
+.youtubeIcon {
+    font-size: 1rem;
+}
+
+.youtubeIconButton:hover {
+    background: radial-gradient(circle at 30% 0%, rgba(255, 75, 75, 0.2), transparent 55%);
+    box-shadow: 0 0 0 1px rgba(255, 75, 75, 0.25);
+    transform: translateY(-1px);
+}
+
+.youtubeText {
+    display: none;
+}
+
+.themeToggle {
+    margin-left: 16px;
+    padding: 4px 10px;
+    min-width: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.18), transparent 55%);
+    color: var(--fg-primary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease, color 0.2s ease;
+}
+
+.themeToggle i {
+    font-size: 0.9rem;
+}
+
+.themeToggle:hover {
+    background: radial-gradient(circle at 30% 0%, var(--accent-soft), transparent 55%);
+    box-shadow: 0 0 0 1px var(--accent-soft);
+    transform: translateY(-1px);
+}
+
+.themeToggle:active {
+    transform: translateY(0);
 }
 
 .qrCodeImage {
@@ -60,22 +131,18 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 0 4px 4px;
+    background-color: var(--bg-elevated);
+    padding: 4px 8px 6px;
     text-align: center;
     flex-shrink: 0;
+    font-size: 0.7rem;
+    color: var(--fg-muted);
 }
 
 .qrCodeTrigger {
     cursor: pointer;
     text-decoration: underline;
-    color: #084126;
-}
-
-.backgroundHint {
-    font-size: 0.75rem;
-    color: #555;
-    margin-top: 2px;
+    color: var(--accent);
 }
 
 .qrCodeModal {
@@ -91,21 +158,22 @@
 }
 
 .qrCodeContent {
-    background-color: white;
+    background-color: #0d1117;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
 }
 
 .closeQrCode {
-    padding: 10px 20px;
-    background-color: #084126;
+    padding: 8px 18px;
+    background-color: #4caf50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 999px;
     cursor: pointer;
 }
 
 .closeQrCode:hover {
-    background-color: #052e1a;
+    background-color: #43a047;
 }

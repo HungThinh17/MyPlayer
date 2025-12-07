@@ -3,11 +3,11 @@
     flex-direction: column;
     width: 100%;
     max-width: 640px;
-    margin: 5px 0;
+    margin: 8px 0 4px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-subtle);
     flex-shrink: 0;
     overflow: hidden; /* Ensure content doesn't overflow the container */
 }

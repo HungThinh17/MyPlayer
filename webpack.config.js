@@ -1,13 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 const setupMiddlewares = require('./webpack.devserver.js');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
 
   return {
-    entry: './src/index.tsx',
+    entry: './src/app/index.tsx',
     output: {
       path: path.resolve('dist'),
       filename: '[name].js',
@@ -32,7 +33,7 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './src/index.html',
+        template: './public/index.html',
         filename: isProduction ? '../index.html' : 'index.html',
         templateParameters: {
           isProduction: isProduction
@@ -41,9 +42,13 @@ module.exports = (env, argv) => {
       new CopyWebpackPlugin({
         patterns: [
           { from: 'resources', to: 'resources' },
-          { from: 'site.webmanifest', to: '' },
-          { from: 'serviceworker.js', to: '' }
+          { from: 'public/site.webmanifest', to: '' },
+          { from: 'public/serviceworker.js', to: '' },
+          { from: 'scripts/myPlaylist.json', to: 'myPlaylist.json' }
         ]
+      }),
+      new webpack.DefinePlugin({
+        'process.env.YT_API_KEY': JSON.stringify(process.env.YT_API_KEY || '')
       })
     ],
 
