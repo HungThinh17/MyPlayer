@@ -34,13 +34,17 @@ export const TrackInfo: React.FC = () => {
   }, [currentVideo, setIsPlaying, playNextTrack, playPreviousTrack]);
 
   if (!currentVideo) {
-    return <div className={styles.trackInfoContainer}>No track playing</div>;
+    return (
+      <div className={styles.trackInfoContainer}>
+        <div className={styles.trackInfoTitle}>No track playing</div>
+      </div>
+    );
   }
 
   return (
     <div className={styles.trackInfoContainer}>
-      <h3>{currentVideo.title}</h3>
-      {/* Removed the <p>ID: {currentVideo.id}</p> line */}
+      <div className={styles.trackInfoLabel}>Now Playing</div>
+      <div className={styles.trackInfoTitle}>{currentVideo.title}</div>
     </div>
   );
 };

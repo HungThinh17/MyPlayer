@@ -48,8 +48,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(245, 245, 245, 0.06);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
     transition: background-color 0.15s ease;
 }
 
@@ -58,7 +58,8 @@
 }
 
 .currentTrackItem {
-    background-color: rgba(76, 175, 80, 0.22);
+    background-color: var(--accent-soft);
+    border-left: 2px solid var(--accent);
 }
 
 .playlistItemContent {
@@ -129,6 +130,7 @@
     justify-content: space-between; /* Distribute space between items */
     margin-bottom: 2px;
     border-bottom: 1px solid rgba(245, 245, 245, 0.08);
+    padding: 8px 0 4px;
 }
 
 .subPlaylistExpandCollapseButton {

@@ -3,18 +3,31 @@
     flex-direction: column;
     width: 100%;
     max-width: 640px;
-    margin: 4px 0 8px;
-    padding: 12px 14px;
-    background: rgba(0, 0, 0, 0.45);
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+    margin: 6px 0 10px;
+    padding: 10px 14px 12px;
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-subtle);
     flex-shrink: 0;
     overflow: hidden; /* Ensure content doesn't overflow the container */
 }
 
-.trackInfoContainer h3 {
+.trackInfoLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-muted);
+  text-align: left;
+  margin-bottom: 4px;
+}
+
+.trackInfoTitle {
   margin: 0;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

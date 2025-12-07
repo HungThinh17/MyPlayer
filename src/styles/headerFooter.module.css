@@ -1,38 +1,41 @@
-/* styles.module.css */
-
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-
 .header {
-    text-align: center;
     padding: 16px 0 8px;
 }
 
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
 .title {
-    display: inline-flex;
-    width: 100%;
-    font-family: 'Permanent Marker', cursive;
-    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    display: flex;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
     color: #f5f5f5;
     text-shadow: none;
     margin: 0;
 }
 
 .titleWord {
-    display: inline-flex;
-    width: 100%;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.titleWord:first-child {
-    color: #e53935;
-}
-
-.titleWord:last-child {
-    color: #4caf50;
+    display: inline-block;
+    margin: 0 4px;
+    transition: color 0.2s ease;
 }
 
 .titleWord:hover {
-    transform: scale(1.1) rotate(-5deg);
+    color: var(--accent);
 }
 
 .titleWord a {
@@ -42,6 +45,74 @@
 
 .titleToggle {
     cursor: pointer;
+}
+
+.youtubeWord {
+    color: #ff0000;
+    font-weight: 600;
+}
+
+.tracksWord {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.youtubeIconButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.16), transparent 55%);
+    text-decoration: none;
+    color: #ff4b4b;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease, color 0.2s ease;
+}
+
+.youtubeIcon {
+    font-size: 1rem;
+}
+
+.youtubeIconButton:hover {
+    background: radial-gradient(circle at 30% 0%, rgba(255, 75, 75, 0.2), transparent 55%);
+    box-shadow: 0 0 0 1px rgba(255, 75, 75, 0.25);
+    transform: translateY(-1px);
+}
+
+.youtubeText {
+    display: none;
+}
+
+.themeToggle {
+    margin-left: 16px;
+    padding: 4px 10px;
+    min-width: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.18), transparent 55%);
+    color: var(--fg-primary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease, color 0.2s ease;
+}
+
+.themeToggle i {
+    font-size: 0.9rem;
+}
+
+.themeToggle:hover {
+    background: radial-gradient(circle at 30% 0%, var(--accent-soft), transparent 55%);
+    box-shadow: 0 0 0 1px var(--accent-soft);
+    transform: translateY(-1px);
+}
+
+.themeToggle:active {
+    transform: translateY(0);
 }
 
 .qrCodeImage {
@@ -60,24 +131,18 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(13, 17, 23, 0.9);
+    background-color: var(--bg-elevated);
     padding: 4px 8px 6px;
     text-align: center;
     flex-shrink: 0;
     font-size: 0.7rem;
-    color: rgba(245, 245, 245, 0.7);
+    color: var(--fg-muted);
 }
 
 .qrCodeTrigger {
     cursor: pointer;
     text-decoration: underline;
-    color: #4caf50;
-}
-
-.backgroundHint {
-    font-size: 0.65rem;
-    color: rgba(245, 245, 245, 0.6);
-    margin-top: 1px;
+    color: var(--accent);
 }
 
 .qrCodeModal {

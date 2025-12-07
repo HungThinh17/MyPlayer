@@ -5,6 +5,29 @@
     /* IE 10 and IE 11 */
     user-select: none;
     /* Standard syntax */
+
+    /* Dark theme (default) */
+    --bg-main: #0b0d10;
+    --bg-main-soft: #0e1117;
+    --bg-elevated: #11151c;
+    --fg-primary: #f5f5f5;
+    --fg-muted: rgba(245, 245, 245, 0.7);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --accent: #4caf50;
+    --accent-soft: rgba(76, 175, 80, 0.2);
+    --danger: #f44336;
+}
+
+:root[data-theme='light'] {
+    --bg-main: #f3f4f6;
+    --bg-main-soft: #ffffff;
+    --bg-elevated: #ffffff;
+    --fg-primary: #111827;
+    --fg-muted: rgba(17, 24, 39, 0.7);
+    --border-subtle: rgba(15, 23, 42, 0.08);
+    --accent: #3c82f6;
+    --accent-soft: rgba(60, 130, 246, 0.16);
+    --danger: #d32f2f;
 }
 
 .app {
@@ -15,11 +38,11 @@
     align-items: center;
     min-height: 100vh;
     justify-content: flex-start;
-    background: linear-gradient(135deg, #0e1117, #1b222c);
+    background: linear-gradient(135deg, var(--bg-main), var(--bg-main-soft));
     font-family: 'Arial', sans-serif;
     font-size: 15px;
     line-height: 1.5;
-    color: #f5f5f5;
+    color: var(--fg-primary);
     text-align: center;
     overflow: auto;
 }
@@ -35,9 +58,9 @@
 .formContainer {
     margin: 8px 0 4px;
     padding: 16px 18px;
-    background: rgba(0, 0, 0, 0.45);
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-subtle);
     width: 90%;
     max-width: 640px;
 }
@@ -50,30 +73,31 @@
 
 .youtubeUrl {
     flex: 1;
-    padding: 10px 12px;
-    font-size: 16px;
-    border: none;
-    border-radius: 999px 0 0 999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    padding: 9px 10px;
+    font-size: 15px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px 0 0 6px;
+    background: transparent;
+    color: var(--fg-primary);
     box-sizing: border-box;
     line-height: 1.5;
-    height: 44px;
+    height: 40px;
     outline: none;
 }
 
 .submitButton {
     padding: 0 14px;
-    border: none;
-    border-radius: 0 999px 999px 0;
+    border: 1px solid var(--border-subtle);
+    border-left: none;
+    border-radius: 0 6px 6px 0;
     cursor: pointer;
-    background: #4caf50;
-    color: #ffffff;
+    background: var(--accent);
+    color: var(--fg-primary);
     font-size: 18px;
     transition: background 0.2s ease, transform 0.1s ease;
     box-sizing: border-box;
     line-height: 1;
-    height: 44px;
+    height: 40px;
 }
 
 .submitButton:hover {
@@ -83,6 +107,9 @@
 
 .controls {
     margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .iconButton {
@@ -96,7 +123,7 @@
     border-radius: 999px;
     cursor: pointer;
     background: transparent;
-    color: #f5f5f5;
+    color: var(--fg-primary);
     font-size: 16px;
     transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
@@ -114,8 +141,8 @@
 .playPauseButton {
     width: 44px;
     height: 44px;
-    background: #4caf50;
-    color: #ffffff;
+    background: var(--accent);
+    color: var(--fg-primary);
 }
 
 .playPauseButton:hover {
@@ -195,9 +222,9 @@
     max-width: 480px;
     margin: 5px auto 0;
     padding: 14px 16px;
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-subtle);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -207,18 +234,19 @@
 .playlistActions {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 12px;
     justify-content: flex-end;
 }
 
 .playlistActionButton {
-    padding: 4px 8px;
-    border-radius: 999px;
+    padding: 0;
+    border-radius: 0;
     cursor: pointer;
     background-color: transparent;
-    border: 1px solid rgba(245, 245, 245, 0.35);
-    color: #f5f5f5;
+    border: none;
+    color: var(--fg-muted);
     font-size: 0.8rem;
+    text-decoration: none;
 }
 
 .playlistActionButton:disabled {
@@ -227,10 +255,10 @@
 }
 
 .playlistConfirm {
-    background-color: rgba(15, 17, 23, 0.96);
+    background-color: var(--bg-elevated);
     border-radius: 8px;
     padding: 8px 10px;
-    border: 1px solid rgba(245, 245, 245, 0.08);
+    border: 1px solid var(--border-subtle);
     font-size: 0.85rem;
     text-align: left;
 }
@@ -247,18 +275,19 @@
     border: none;
     border-radius: 999px;
     cursor: pointer;
-    background-color: #4caf50;
-    color: white;
+    background-color: var(--accent);
+    color: var(--fg-primary);
 }
 
 .playlistConfirmButtons button:last-child {
-    background-color: #f44336;
+    background-color: var(--danger);
 }
 
 .playlistScrollArea {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    margin-top: 4px;
 }
 
 @media (min-width: 1024px) {

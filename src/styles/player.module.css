@@ -5,9 +5,9 @@
     max-width: 640px;
     margin: 8px 0 4px;
     padding: 0;
-    background: rgba(0, 0, 0, 0.45);
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-subtle);
     flex-shrink: 0;
     overflow: hidden; /* Ensure content doesn't overflow the container */
 }
