@@ -1,13 +1,13 @@
 import * as React from 'react';
-import styles from './styles/styles.module.css';
-import { YouTubeProvider } from './store/store';
-import { Footer, Header, QRCodeModal } from './modules/headerFooter';
-import { VideoForm } from './modules/videoform';
-import { Controls } from './modules/control';
-import { YouTubePlayer } from './modules/youtubePlayer';
-import Sidebar, { SidebarProps } from './modules/sidebar';
 import { useState, useRef, useEffect } from 'react';
-import { TrackInfo } from './modules/trackInfo';
+import styles from '../styles/styles.module.css';
+import { YouTubeProvider } from '../store/store';
+import { Footer, Header, QRCodeModal } from '../components/layout/headerFooter';
+import { VideoForm } from '../features/player/videoform';
+import { Controls } from '../features/player/control';
+import { YouTubePlayer } from '../features/player/youtubePlayer';
+import Sidebar from '../features/playlist/sidebar';
+import { TrackInfo } from '../features/player/trackInfo';
 
 const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

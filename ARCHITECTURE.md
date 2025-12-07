@@ -25,7 +25,7 @@ Core technologies:
 At a high level, MyPlayer consists of these layers:
 
 1. **Presentation (React components)**
-   - Pages and UI modules living under `src/` and `src/modules/`.
+   - Pages and UI modules living under `src/app`, `src/features/`, and `src/components/`.
    - CSS Modules under `src/styles/`.
 
 2. **State & Domain Logic**
@@ -51,13 +51,13 @@ Runtime environment:
 
 Entry points:
 
-- `src/index.tsx`
+- `src/app/index.tsx`
   - Bootstraps React using `createRoot`.
   - Wraps the app in `React.StrictMode`.
   - Registers `serviceworker.js` on `window.load`.
   - In development, overrides `console.log` to POST logs to `/log` (handled by `webpack.devserver.js`).
 
-- `src/App.tsx`
+- `src/app/App.tsx`
   - Top-level application component.
   - Wraps the UI in `YouTubeProvider` (global store).
   - Manages the sidebar open/close state, including touch and mouse hover gestures.

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import styles from '../styles/sidebar.module.css';
+import styles from '../../styles/sidebar.module.css';
 import { Playlist } from './playList';
-import { useYouTubeStore } from '../store/store';
+import { useYouTubeStore } from '../../store/store';
 
 export interface SidebarProps {
   isOpen: boolean;

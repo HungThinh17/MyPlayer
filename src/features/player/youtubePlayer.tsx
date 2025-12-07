@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styles from '../styles/player.module.css';
-import { useYouTubeStore } from '../store/store';
+import styles from '../../styles/player.module.css';
+import { useYouTubeStore } from '../../store/store';
 import SpinningDiskEffect from './visualEffect';
 
 /// <reference types="youtube" />

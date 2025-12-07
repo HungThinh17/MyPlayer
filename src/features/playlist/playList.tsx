@@ -1,7 +1,7 @@
 import * as React from 'react';
-import styles from '../styles/playlist.module.css';
-import { useYouTubeStore, PlaylistTrack } from '../store/store';
-import { Popup } from './utilities';
+import styles from '../../styles/playlist.module.css';
+import { useYouTubeStore, PlaylistTrack } from '../../store/store';
+import { Popup } from '../../components/common/Popup';
 
 interface PlaylistProps {
   onClose?: () => void;

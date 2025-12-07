@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from '../styles/trackInfo.module.css';
-import { useYouTubeStore } from '../store/store';
+import styles from '../../styles/trackInfo.module.css';
+import { useYouTubeStore } from '../../store/store';
 
 export const TrackInfo: React.FC = () => {
   const { currentVideo, setIsPlaying, playNextTrack, playPreviousTrack } = useYouTubeStore();

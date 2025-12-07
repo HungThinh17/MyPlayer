@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import styles from '../styles/utilities.module.css';
+import styles from '../../styles/utilities.module.css';
 
 interface PopupProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import styles from '../styles/styles.module.css';
-import { useYouTubeStore } from '../store/store';
-import { Popup } from './utilities';
+import styles from '../../styles/styles.module.css';
+import { useYouTubeStore } from '../../store/store';
+import { Popup } from '../../components/common/Popup';
 
 interface Track {
     id: string;

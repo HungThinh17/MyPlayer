@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useYouTubeStore } from '../store/store';
+import { useYouTubeStore } from '../../store/store';
 
 interface SpinningDiskEffectProps {
   id?: string;

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styles from '../styles/headerFooter.module.css';
-import { useYouTubeStore } from '../store/store';
+import styles from '../../styles/headerFooter.module.css';
+import { useYouTubeStore } from '../../store/store';
 
 export interface HeaderProps {
     onToggleSidebar?: () => void;

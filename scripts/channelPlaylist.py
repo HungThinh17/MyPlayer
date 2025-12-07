@@ -60,5 +60,6 @@ def build_combined_json(channel_urls):
 
 
 if __name__ == "__main__":
+    # Build and save combined playlist JSON for configured channels.
     final_json = build_combined_json(CHANNEL_URLS)
     save_json(final_json, OUTPUT_FILE)

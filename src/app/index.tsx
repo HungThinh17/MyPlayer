@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { createRoot } from 'react-dom/client';
+import * as React from 'react';
 import App from './App';
 
 // Console log override only in development mode

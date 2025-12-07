@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styles from '../styles/styles.module.css';
-import { useYouTubeStore } from '../store/store';
+import styles from '../../styles/styles.module.css';
+import { useYouTubeStore } from '../../store/store';
 
 export const VideoForm: React.FC = () => {
     const { videoUrl, setVideoUrl, setVideoId, setIsPlaying } = useYouTubeStore();
