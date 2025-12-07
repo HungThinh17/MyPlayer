@@ -58,11 +58,35 @@ const PlaylistPanel: React.FC = () => {
       try {
         const text = reader.result as string;
         const parsed = JSON.parse(text);
-        if (Array.isArray(parsed)) {
-          setPlaylist(parsed);
+
+        const rawItems: unknown =
+          Array.isArray(parsed)
+            ? parsed
+            : parsed && typeof parsed === 'object' && Array.isArray((parsed as any).playlist)
+            ? (parsed as any).playlist
+            : null;
+
+        if (!rawItems || !Array.isArray(rawItems)) {
+          alert('Invalid playlist file format.');
+          return;
         }
+
+        const normalised = (rawItems as any[])
+          .filter((item) => item && typeof item.id === 'string' && typeof item.title === 'string')
+          .map((item) => ({
+            id: item.id,
+            title: item.title,
+            subPlaylist: typeof item.subPlaylist === 'string' ? item.subPlaylist : undefined,
+          }));
+
+        if (normalised.length === 0) {
+          alert('Playlist file contains no valid tracks.');
+          return;
+        }
+
+        setPlaylist(normalised);
       } catch {
-        // Ignore invalid files
+        alert('Failed to import playlist.');
       } finally {
         event.target.value = '';
       }

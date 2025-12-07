@@ -1,145 +1,133 @@
-# Layout & Responsiveness Improvement Plan
+# Improvement Plan (Layout + Minimalist UI)
 
-## 1. Goals
+This plan tracks what has been done and what is still planned, combining the layout work with the minimalist UX feedback from `FEEDBACK.md`.
 
-- Remove the off‑canvas sidebar and move playlist management into the main content area.
-- Establish a clear vertical layout: Header → Controls → Player/Track info → Playlist → Footer.
+---
+
+## 1. Status Overview
+
+- ✅ Replaced sidebar with in-page playlist panel.
+- ✅ Introduced new main layout (Header → Controls → Player/Track Info → Playlist → Footer).
+- ✅ Added responsive behavior for phone/tablet/desktop with a two-column layout on desktop.
+- ✅ Ensured long playlists scroll inside their own area.
+- ✅ Wired Clear / Export / Import playlist actions into the new panel.
+- ⏳ Not yet addressed: minimalist visual language, typography system, and control/playlist visual simplification.
+
+---
+
+## 2. Layout & Responsiveness (Implemented)
+
+### 2.1 Goals
+
+- Remove the off-canvas sidebar and move playlist management into the main content area.
+- Establish a clear vertical layout with logical sections.
 - Make the layout responsive and comfortable on phones, tablets, and desktops.
 - Allow long playlists to scroll without breaking the background or footer.
-- Reuse existing components (Playlist, Controls, TrackInfo, YouTubePlayer) instead of rewriting behavior.
+
+### 2.2 Behavior by Device
+
+- **Phone (~≤ 600px)**
+  - Single-column layout: Header → Controls → Player/Track Info → Playlist → Footer.
+  - Playlist appears as a card below the player and scrolls inside its own area.
+  - No horizontal scrolling.
+
+- **Tablet (~600–1024px)**
+  - Still primarily single-column, but with wider max-widths for controls and player.
+  - Playlist card taller so more items are visible.
+
+- **Desktop (>1024px)**
+  - Two-column main layout:
+    - Left: Controls + Player + TrackInfo (stacked).
+    - Right: Playlist panel (toolbar + scrollable list).
+  - Playlist column scrolls independently; footer and background remain stable.
 
 ---
 
-## 2. Target Layout by Device
+## 3. Minimalist UI Improvements (Planned)
 
-### 2.1 Phone (narrow screens, ~≤ 600px)
+Based on the expert feedback in `FEEDBACK.md`, the next steps focus on simplifying and unifying the visual language.
 
-- Layout:
-  - Full‑width header at the top.
-  - Controls section (URL input + buttons) directly beneath header.
-  - Player section: video or visualizer + current track info.
-  - Playlist section stacked last, above the footer, and scrollable.
-  - Footer fixed or sticky at the bottom (as currently implemented), always visible.
-- Behavior:
-  - Everything is stacked in a single column; no side‑by‑side layout.
-  - Playlist list scrolls inside its own container so the header and controls don’t scroll off too quickly.
-  - Avoid horizontal scroll; all sections should respect `max-width` and padding.
+### 3.1 Overall Visual Language
 
-### 2.2 Tablet (medium screens, ~600–1024px)
+- Replace the noisy background image with either:
+  - A flat solid background, or
+  - A very subtle gradient that doesn’t compete with content.
+- Reduce or remove heavy shadows and thick borders across the app.
+- Introduce a small spacing scale (e.g. 8px / 12px / 16px) and reuse it consistently.
+- Choose one primary accent color and apply it consistently for primary actions.
 
-- Layout:
-  - Still primarily a vertical stack to keep things simple and readable.
-  - Increase max widths for controls and player container to use more horizontal space.
-  - Playlist section can be taller by default so more tracks are visible without scrolling the whole page.
-- Behavior:
-  - Optional enhancement: place Player and Playlist in a two‑row layout within the main area where the Player has slightly more vertical space than on phone.
-  - Controls remain at the top of the main area for quick access.
+### 3.2 YouTube URL Input Bar
 
-### 2.3 Desktop (wide screens, >1024px)
+- Simplify the `formContainer` styling:
+  - Lighter or no drop-shadow, more subtle border-radius.
+  - Background opacity toned down so it feels lighter.
+- Update the URL input and submit button to feel like a modern search bar:
+  - Thinner borders or underline-style.
+  - Action icon visually integrated at the right side.
+  - Consistent icon style (matching player controls).
 
-- Layout:
-  - Header and Footer span full width as now.
-  - Main content uses a two‑column layout:
-    - Left column: Controls + Player + TrackInfo (stacked).
-    - Right column: Playlist header/actions + playlist list (scrollable).
-  - The two columns share the same vertical height (viewport height minus header/footer).
-- Behavior:
-  - Playlist column can scroll independently while the left column remains mostly static.
-  - Keep a reasonable max width for each column to avoid overly wide controls or text.
+### 3.3 Player Controls
 
----
+- Move towards icon-only controls with clear hover and active states.
+- Emphasize the primary action (Play/Pause):
+  - Slightly larger size or stronger accent color.
+- Consider hiding less-used actions behind a “more” menu or grouping them more tightly.
+- Switch to a single, consistent icon set and align sizes and stroke weights.
 
-## 3. Component Structure Changes (Conceptual)
+### 3.4 Now Playing (Thumbnail + Title)
 
-### 3.1 App Layout
+- Remove any decorative frame around the thumbnail; keep it flat and clean.
+- Add a clear text hierarchy for the current track:
+  - Title: larger, bold.
+  - Secondary text (if added later): smaller, muted color.
+- Increase vertical spacing around the title to give it breathing room.
 
-- Simplify `App.tsx`:
-  - Remove `Sidebar` import and all `isSidebarOpen` state, touch/mouse listeners, and handlers.
-  - Stop passing `onToggleSidebar` into the `Header`; make the header independent of playlist visibility.
-  - Introduce a main layout container and semantic sections:
-    - `Header`
-    - `<main className={styles.mainLayout}>`
-      - Controls section
-      - Player/TrackInfo section
-      - Playlist section
-    - `Footer`
-    - `QRCodeModal`
+### 3.5 Playlist Panel
 
-### 3.2 Playlist Integration
+- Lighten the playlist panel visuals to better match a minimalist style:
+  - Turn Clear/Export/Import into simple text or outline buttons in a thin toolbar.
+  - Reduce button padding and visual weight.
+- Simplify playlist rows:
+  - Single-line row height with consistent vertical spacing.
+  - Only show the title; further metadata (if needed) can come later.
+  - Use subtle separators or hover background for scanning.
 
-- Replace the sidebar with an in‑page playlist module:
-  - Create a small “Playlist Actions” area (Clear, Export, Import) above the playlist list.
-  - Reuse the existing logic from `sidebar.tsx` for Clear/Export/Import; no functional changes.
-  - Keep `Playlist` focused on rendering and managing tracks and sub‑playlists.
+### 3.6 Footer and QR Code
 
-### 3.3 Header Behavior
-
-- Remove the “Tracks” click behavior that toggled the sidebar.
-- Keep the visual style (YouTube / Tracks title), but treat “Tracks” as non‑interactive or repurpose it if desired later (e.g., scroll to playlist).
+- Keep the footer as a single-line or very compact text area.
+- Reduce font size and possibly use slightly muted color (e.g. 70% opacity).
+- Keep the QR code behind the existing modal, but ensure the trigger is a subtle text link or icon that fits the minimalist style.
 
 ---
 
-## 4. CSS & Layout Constraints
+## 4. Typography System (Planned)
 
-### 4.1 App Container
-
-- Update `.app` in `styles.module.css`:
-  - Change from `height: 100vh` + `overflow: hidden` to:
-    - `min-height: 100vh`
-    - `overflow: auto`
-  - Keep the background image and centering behavior.
-  - Ensure the main layout is constrained with `max-width` and horizontal padding.
-
-### 4.2 Main Layout & Sections
-
-- Add a `mainLayout` container:
-  - Mobile/tablet: `display: flex; flex-direction: column; gap: [small];`
-  - Desktop: `display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: [medium];`
-- Define section classes:
-  - `controlsSection`: wraps `VideoForm` + `Controls`; full width on all devices, max width for readability.
-  - `playerSection`: wraps `YouTubePlayer` + `TrackInfo`; uses existing `playerContainer` styles.
-  - `playlistSection`: wraps playlist header/actions + `Playlist` list; scrollable area when content is long.
-- Make the playlist section scroll independently on desktop via:
-  - `max-height: calc(100vh - headerHeight - footerHeight - margins);`
-  - `overflow-y: auto;`
-
-### 4.3 Media Queries
-
-- Introduce responsive breakpoints in `styles.module.css`:
-  - `@media (max-width: 600px)` for phone:
-    - Single column layout (default).
-    - Tighten margins/padding where needed.
-  - `@media (min-width: 600px) and (max-width: 1024px)` for tablets:
-    - Slightly larger max widths for containers.
-    - Adjust gaps between sections.
-  - `@media (min-width: 1024px)` for desktops:
-    - Activate the two‑column `mainLayout`.
-    - Ensure playlist column is scrollable and visually distinct.
+- Adopt a small, consistent type scale:
+  - `H1` (app title / major headings): ~20–22px, bold.
+  - `H2` (section titles like “Playlist”): ~16–18px, semi-bold.
+  - `Body` (general text, labels): ~14–16px, regular.
+  - `Muted` text: same size as Body, but ~70–75% opacity.
+- Apply this consistently to:
+  - Header title.
+  - Section titles (e.g. Playlist heading, “Now Playing” if added).
+  - Playlist rows, footer text, helper text.
 
 ---
 
-## 5. Migration Steps (Implementation Order)
+## 5. Implementation Order for Upcoming Work
 
-1. **Remove Sidebar usage**  
-   - Update `App.tsx` to remove `Sidebar` and all related state/handlers.  
-   - Update `Header` usages to stop passing `onToggleSidebar`.
+1. **Visual Clean-Up (Background + Shadows)**
+   - Simplify `.app` background and reduce heavy shadows and radii across main containers.
 
-2. **Inline Playlist Actions + List**  
-   - Extract Clear/Export/Import logic from `sidebar.tsx` into a reusable `PlaylistActions` helper or integrate directly in the new playlist section.  
-   - Render `PlaylistActions` + `Playlist` within the main layout.
+2. **Controls + Input Minimalism**
+   - Restyle the URL input bar and player controls to match a minimalist, icon-first design.
 
-3. **Introduce Main Layout & Sections**  
-   - Add `mainLayout`, `controlsSection`, `playerSection`, and `playlistSection` classes to `styles.module.css`.  
-   - Wrap existing components in the new structure in `App.tsx`.
+3. **Playlist Panel Simplification**
+   - Lighten playlist toolbar buttons and row styling; improve scan-ability.
 
-4. **Add Responsive CSS**  
-   - Implement media queries and grid/flex rules for phone/tablet/desktop behavior as described above.  
-   - Ensure the playlist section scrolls and does not push the footer off‑screen.
+4. **Typography Pass**
+   - Implement the typography scale and apply it to headers, body text, playlist items, and footer.
 
-5. **Clean Up Legacy Styles**  
-   - Remove unused sidebar‑specific styles (only after verifying nothing else depends on them).  
-   - Optionally separate playlist/player styles out of `headerFooter.module.css` into their own files for clarity (non‑functional refactor).
+5. **Polish and Micro-UX**
+   - Review hover/focus/active states, spacing, and section separation to ensure the app feels clean and intentional on all screen sizes.
 
-6. **Manual Responsive Verification**  
-   - Manually test in dev tools at common widths (375px, 768px, 1024px, 1440px).  
-   - Verify: no horizontal scrollbars, playlist scroll behavior, header/footer visibility, and that controls remain easy to tap on touch devices.

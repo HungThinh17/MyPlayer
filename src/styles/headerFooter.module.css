@@ -4,16 +4,16 @@
 
 .header {
     text-align: center;
-    padding: 20px 0;
+    padding: 16px 0 8px;
 }
 
 .title {
     display: inline-flex;
     width: 100%;
     font-family: 'Permanent Marker', cursive;
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: #333;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    color: #f5f5f5;
+    text-shadow: none;
     margin: 0;
 }
 
@@ -24,11 +24,11 @@
 }
 
 .titleWord:first-child {
-    color: #e73c3c;
+    color: #e53935;
 }
 
 .titleWord:last-child {
-    color: #3f34db;
+    color: #4caf50;
 }
 
 .titleWord:hover {
@@ -60,22 +60,24 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 0 4px 4px;
+    background-color: rgba(13, 17, 23, 0.9);
+    padding: 4px 8px 6px;
     text-align: center;
     flex-shrink: 0;
+    font-size: 0.7rem;
+    color: rgba(245, 245, 245, 0.7);
 }
 
 .qrCodeTrigger {
     cursor: pointer;
     text-decoration: underline;
-    color: #084126;
+    color: #4caf50;
 }
 
 .backgroundHint {
-    font-size: 0.75rem;
-    color: #555;
-    margin-top: 2px;
+    font-size: 0.65rem;
+    color: rgba(245, 245, 245, 0.6);
+    margin-top: 1px;
 }
 
 .qrCodeModal {
@@ -91,21 +93,22 @@
 }
 
 .qrCodeContent {
-    background-color: white;
+    background-color: #0d1117;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
 }
 
 .closeQrCode {
-    padding: 10px 20px;
-    background-color: #084126;
+    padding: 8px 18px;
+    background-color: #4caf50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 999px;
     cursor: pointer;
 }
 
 .closeQrCode:hover {
-    background-color: #052e1a;
+    background-color: #43a047;
 }
