@@ -89,14 +89,59 @@ export const YouTubeProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Load playlist on mount
   React.useEffect(() => {
-    const storedPlaylist = loadPlaylistFromStorage();
-    if (storedPlaylist.length > 0) {
-      setState(prevState => ({
-        ...prevState,
-        playlist: storedPlaylist
-      }));
-    }
-    setIsInitialLoad(false);
+    let cancelled = false;
+
+    const initialisePlaylist = async () => {
+      const storedPlaylist = loadPlaylistFromStorage();
+      if (storedPlaylist.length > 0) {
+        if (!cancelled) {
+          setState(prevState => ({
+            ...prevState,
+            playlist: storedPlaylist,
+          }));
+          setIsInitialLoad(false);
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch('dist/myPlaylist.json', { cache: 'no-cache' });
+        if (!response.ok) {
+          throw new Error('Failed to load default playlist');
+        }
+        const parsed = await response.json();
+        if (!Array.isArray(parsed)) {
+          throw new Error('Invalid default playlist format');
+        }
+
+        const normalised: PlaylistTrack[] = parsed
+          .filter((item: any) => item && typeof item.id === 'string' && typeof item.title === 'string')
+          .map((item: any) => ({
+            id: item.id,
+            title: item.title,
+            subPlaylist: typeof item.subPlaylist === 'string' ? item.subPlaylist : undefined,
+          }));
+
+        if (!cancelled && normalised.length > 0) {
+          setState(prevState => ({
+            ...prevState,
+            playlist: normalised,
+          }));
+        }
+      } catch {
+        // Ignore default playlist loading errors
+      } finally {
+        if (!cancelled) {
+          setIsInitialLoad(false);
+        }
+      }
+    };
+
+    void initialisePlaylist();
+
+    return () => {
+      cancelled = true;
+    };
   }, []); // Runs only on mount
 
   // Save playlist changes to localStorage

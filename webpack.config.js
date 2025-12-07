@@ -43,7 +43,8 @@ module.exports = (env, argv) => {
         patterns: [
           { from: 'resources', to: 'resources' },
           { from: 'public/site.webmanifest', to: '' },
-          { from: 'public/serviceworker.js', to: '' }
+          { from: 'public/serviceworker.js', to: '' },
+          { from: 'scripts/myPlaylist.json', to: 'myPlaylist.json' }
         ]
       }),
       new webpack.DefinePlugin({
