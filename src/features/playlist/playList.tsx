@@ -2,6 +2,14 @@ import * as React from 'react';
 import styles from '../../styles/playlist.module.css';
 import { useYouTubeStore, PlaylistTrack } from '../../store/store';
 import { Popup } from '../../components/common/Popup';
+import {
+  getPlayableTracks,
+  getSubPlaylists,
+  groupBySubPlaylist,
+  MAIN_PLAYLIST_NAME,
+  SUBPLAYLIST_MARKER_ID,
+  SubPlaylistName,
+} from '../../store/playlistHelpers';
 
 interface PlaylistProps {
   onClose?: () => void;
@@ -23,26 +31,14 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
   const [selectedSubPlaylistName, setSelectedSubPlaylistName] = React.useState<string | null>(null);
 
   const availableSubPlaylists = React.useMemo(
-    () => [
-      'Main Playlist',
-      ...playlist
-        .filter((track: PlaylistTrack) => track.subPlaylist && track.id.includes('subplaylist'))
-        .map((track: PlaylistTrack) => track.subPlaylist as string),
-    ],
+    () => [MAIN_PLAYLIST_NAME, ...getSubPlaylists<PlaylistTrack>(playlist)],
     [playlist]
   );
 
-  const groupedPlaylist: { [key: string]: PlaylistTrack[] } = React.useMemo(() => {
-    const groups: { [key: string]: PlaylistTrack[] } = {};
-    playlist.forEach((track: PlaylistTrack) => {
-      const sub = track.subPlaylist || 'Main Playlist';
-      if (!groups[sub]) {
-        groups[sub] = [];
-      }
-      groups[sub].push(track);
-    });
-    return groups;
-  }, [playlist]);
+  const groupedPlaylist: Record<SubPlaylistName, PlaylistTrack[]> = React.useMemo(
+    () => groupBySubPlaylist<PlaylistTrack>(playlist),
+    [playlist]
+  );
 
   const selectTrack = (id: string) => {
     setVideoId(id);
@@ -59,7 +55,7 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
       return;
     }
     const marker: PlaylistTrack = {
-      id: 'subplaylist',
+      id: SUBPLAYLIST_MARKER_ID,
       title: newSubPlaylistName,
       subPlaylist: newSubPlaylistName,
     };
@@ -112,7 +108,7 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
   const moveTrackByOffset = (offset: number) => {
     if (!selectedTrackId) return;
     const index = playlist.findIndex(
-      (track: PlaylistTrack) => track.id === selectedTrackId && track.id !== 'subplaylist'
+      (track: PlaylistTrack) => track.id === selectedTrackId && track.id !== SUBPLAYLIST_MARKER_ID
     );
     if (index === -1) {
       return;
@@ -138,10 +134,14 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
     const updated = playlist
       .filter(
         (track: PlaylistTrack) =>
-          !(track.id === 'subplaylist' && track.subPlaylist === subPlaylistName && track.title === subPlaylistName)
+          !(
+            track.id === SUBPLAYLIST_MARKER_ID &&
+            track.subPlaylist === subPlaylistName &&
+            track.title === subPlaylistName
+          )
       )
       .map((track: PlaylistTrack) => {
-        if (track.subPlaylist === subPlaylistName && track.id !== 'subplaylist') {
+        if (track.subPlaylist === subPlaylistName && track.id !== SUBPLAYLIST_MARKER_ID) {
           const { subPlaylist, ...rest } = track;
           return { ...rest, subPlaylist: undefined };
         }
@@ -160,7 +160,9 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
       (track: PlaylistTrack) =>
         !(
           track.subPlaylist === subPlaylistName ||
-          (track.id === 'subplaylist' && track.subPlaylist === subPlaylistName && track.title === subPlaylistName)
+          (track.id === SUBPLAYLIST_MARKER_ID &&
+            track.subPlaylist === subPlaylistName &&
+            track.title === subPlaylistName)
         )
     );
     setPlaylist(updated);
@@ -172,7 +174,7 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
   };
 
   const totalTracks = React.useMemo(
-    () => playlist.filter((track: PlaylistTrack) => track.id !== 'subplaylist').length,
+    () => getPlayableTracks<PlaylistTrack>(playlist).length,
     [playlist]
   );
 
@@ -198,7 +200,7 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
         </Popup>
       </div>
       {Object.entries(groupedPlaylist).map(([subPlaylistName, tracks]) => {
-        if (subPlaylistName !== 'Main Playlist') {
+        if (subPlaylistName !== MAIN_PLAYLIST_NAME) {
           return (
             <div key={subPlaylistName}>
               <div
@@ -214,7 +216,7 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
               {expandedSubPlaylists[subPlaylistName] && (
                 <ul className={styles.playlistList}>
                   {tracks
-                    .filter((track: PlaylistTrack) => track.id !== 'subplaylist')
+                    .filter((track: PlaylistTrack) => track.id !== SUBPLAYLIST_MARKER_ID)
                     .map((track: PlaylistTrack) => {
                       const isCurrent = track.id === videoId || track.id === currentVideo?.id;
                       return (
@@ -236,7 +238,7 @@ export const Playlist: React.FC<PlaylistProps> = ({ onClose }) => {
         return (
           <ul className={styles.playlistList} key={subPlaylistName}>
             {tracks
-              .filter((track: PlaylistTrack) => track.id !== 'subplaylist')
+              .filter((track: PlaylistTrack) => track.id !== SUBPLAYLIST_MARKER_ID)
               .map((track: PlaylistTrack) => {
                 const isCurrent = track.id === videoId || track.id === currentVideo?.id;
                 return (

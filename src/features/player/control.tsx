@@ -2,6 +2,13 @@ import * as React from 'react';
 import styles from '../../styles/styles.module.css';
 import { useYouTubeStore } from '../../store/store';
 import { Popup } from '../../components/common/Popup';
+import { getVideoTitle } from '../../api/youtube';
+import {
+    getSubPlaylists,
+    MAIN_PLAYLIST_NAME,
+    SUBPLAYLIST_MARKER_ID,
+    UNTRACK_LABEL,
+} from '../../store/playlistHelpers';
 
 interface Track {
     id: string;
@@ -32,7 +39,7 @@ export const Controls: React.FC = () => {
             console.log("Invalid video ID. Cannot toggle favorite.");
             return;
         }
-        const subPlaylists = ['**Untrack**', 'Main Playlist', ...playlist.filter(track => track.subPlaylist && track.id.includes('subplaylist')).map(track => track.subPlaylist)];
+        const subPlaylists = [UNTRACK_LABEL, MAIN_PLAYLIST_NAME, ...getSubPlaylists(playlist)];
         if (subPlaylists.length > 2) {
             setIsSubPlaylistPopupOpen(true);
         } else {
@@ -43,7 +50,7 @@ export const Controls: React.FC = () => {
 
     const handleSubPlaylistSelect = (subPlaylist: string) => {
         setSelectedSubPlaylist(subPlaylist);
-        if (subPlaylist === '**Untrack**') {
+        if (subPlaylist === UNTRACK_LABEL) {
             removeFromPlaylist();
         } else {
             addToSubPlaylist(subPlaylist);
@@ -53,7 +60,7 @@ export const Controls: React.FC = () => {
 
     const addToSubPlaylist = (subPlaylist: string) => {
         if (!videoId) return;
-        fetchVideoTitle(videoId).then(videoTitle => {
+        getVideoTitle(videoId).then(videoTitle => {
             if (videoTitle) {
                 const newTrack: Track = { id: videoId, title: videoTitle, subPlaylist };
                 const existingTrackIndex = playlist.findIndex(track => track.id === videoId);
@@ -108,33 +115,6 @@ export const Controls: React.FC = () => {
         }
     };
 
-    const fetchVideoTitle = async (videoId: string) => {
-        if (!videoId) {
-            throw new Error("Invalid video ID");
-        }
-
-        const apiKey = 'AIzaSyDdU1x8lE37fnPvySQS87VD68Z72zMnixI';
-        const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet`;
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Error fetching video data: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            if (data.items.length === 0) {
-                throw new Error("No video found for the given ID");
-            }
-
-            const videoTitle = data.items[0].snippet.title;
-            return videoTitle;
-        } catch (error) {
-            console.error("Error:", error);
-            return null;
-        }
-    };
-
     React.useEffect(() => {
         if (videoUrl) {
             setIsPastOrClear(false);
@@ -143,7 +123,7 @@ export const Controls: React.FC = () => {
         }
     }, [videoUrl]);
 
-    const subPlaylists = ['**Untrack**', 'Main Playlist', ...playlist.filter(track => track.subPlaylist && track.id.includes('subplaylist')).map(track => track.subPlaylist)];
+    const subPlaylists = [UNTRACK_LABEL, MAIN_PLAYLIST_NAME, ...getSubPlaylists(playlist)];
 
     return (
         <div className={styles.controls}>

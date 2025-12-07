@@ -1,6 +1,6 @@
-# MyPlayer – Improvement Plan
+# MyPlayer – UI Improvement Checklist (Central Player View)
 
-This document tracks proposed structural and code-quality improvements. Items are grouped by area, with high‑leverage changes first.
+This checklist focuses on making the **central player view** cleaner, more professional, and visually focused, based on the feedback in `Feeback.md`.
 
 > Legend:  
 > - [ ] Planned  
@@ -8,119 +8,143 @@ This document tracks proposed structural and code-quality improvements. Items ar
 
 ---
 
-## 1. Project Structure
+## 1. Background & Layout Framing
 
-- [x] Introduce a feature‑oriented folder layout under `src/`:
-  - `src/app` – app shell (`App.tsx`, `index.tsx`).
-  - `src/features/player` – player UI (controls, video form, visualizer, YouTube player, track info).
-  - `src/features/playlist` – playlist UI (playlist, sidebar, related popups).
-  - `src/components/common` – generic components (e.g. `Popup`).
-  - `src/components/layout` – layout components (e.g. header/footer).
-  - `src/store` – global state (YouTube/playlist store).
-  - `src/styles` – CSS Modules.
-- [x] Move `Popup` from `src/modules/utilities.tsx` into `src/components/common/Popup.tsx` and update imports.
-- [x] Introduce a `public/` folder for static web assets:
-  - `public/index.html` – HTML template used by Webpack.
-  - `public/serviceworker.js`, `public/site.webmanifest`.
-- [x] Introduce a `scripts/` folder for helper tooling and data (moved from `tools/`).
+- [ ] Replace the current detailed background image with a minimalist base:
+  - [ ] Use a solid light gray (e.g. `#F5F5F5`) or white background for the app root (`.app` in `styles.module.css`).
+  - [ ] Optionally define a dark-mode variant using a dark gray (e.g. `#1E1E1E`) behind the player container (not mandatory yet, but keep in mind for future).
+- [ ] Introduce a **player container card** that groups the main UI:
+  - [ ] Wrap the input field, controls, and visualizer/player area in a single container (e.g. `.playerCard`).
+  - [ ] Give the container a solid background (white or very light gray) with:
+    - [ ] Slight border-radius (6–10px).
+    - [ ] Subtle box-shadow or border to clearly separate it from the page background.
+  - [ ] Ensure the container is centered horizontally and vertically biased towards the top (not touching the edges on small screens).
 
----
-
-## 2. State Management & Data Model
-
-- [ ] Split `YouTubeState` in `src/store/store.tsx` into conceptual slices:
-  - Playback: `videoId`, `videoUrl`, `isPlaying`, `isVideoMode`, `repeat`.
-  - Playlist: `playlist`, helpers for grouping and counting tracks.
-  - UI: `isQRCodeModalVisible`, `isPastOrClear`, sidebar state (if promoted to global later).
-- [ ] Add selector-style helpers in the store or a companion module:
-  - `getPlayableTracks(playlist)`.
-  - `getSubPlaylists(playlist)`.
-  - `groupBySubPlaylist(playlist)`.
-- [ ] Create a dedicated playlist service module (e.g. `src/store/playlistService.ts`) to encapsulate:
-  - Adding/removing tracks.
-  - Moving tracks between sub‑playlists.
-  - Reordering tracks.
-  - Creating/removing sub‑playlists.
+Files to touch:  
+- `src/styles/styles.module.css` (new `.playerCard`, adjust `.app` background)  
+- `src/app/App.tsx` (wrap `VideoForm`, `Controls`, `YouTubePlayer`, `TrackInfo` in the new container)
 
 ---
 
-## 3. App Shell & Event Handling
+## 2. Input / Search Bar Redesign
 
-- [ ] Refactor touch/mouse event handling in `src/app/App.tsx`:
-  - Use `useCallback` for `handleTouchStart` and the mouse‑over handler.
-  - Add/remove exactly those callbacks in `useEffect` to ensure listeners are cleaned up.
-  - Avoid stale closures by including relevant dependencies or using refs for `isSidebarOpen`.
-- [ ] Prefer React event types (`React.TouchEvent`, `React.MouseEvent`) instead of global `TouchEvent` where feasible.
+- [ ] Improve input field readability and hierarchy:
+  - [ ] Increase font-size of the placeholder and content (e.g. 16–18px) in `.youtubeUrl`.
+  - [ ] Ensure sufficient padding (top/bottom) so the field doesn’t feel cramped.
+  - [ ] Use consistent border-radius (3–5px) on the entire input+button group.
+- [ ] Replace the current arrow icon with a more intuitive action icon:
+  - [ ] Decide on the primary behavior:
+    - [ ] If the field primarily **plays the given URL**, use a solid **play icon** (e.g. FontAwesome `fa-play` in a filled button).
+    - [ ] If you intend to support searching in future, consider a **magnifying glass** (`fa-search`), but keep it consistent with behavior.
+  - [ ] Update the button styling to emphasize the action:
+    - [ ] Use a primary color background (e.g. blue/teal) with white icon.
+    - [ ] On hover/focus, apply subtle brightness or shadow changes.
+- [ ] Align the input visually with the player container:
+  - [ ] Ensure the input and button together fill most of the container width but leave reasonable side margins.
 
----
-
-## 4. YouTube Integration
-
-- [ ] Extract YouTube Data API calls (e.g. `fetchVideoTitle` from `src/features/player/control.tsx`) into `src/api/youtube.ts`:
-  - Export a typed function `getVideoTitle(videoId: string): Promise<string | null>`.
-  - Handle common errors (invalid ID, quota, network) in one place.
-- [ ] Move the API key out of component code:
-  - Use an environment variable (e.g. `process.env.YT_API_KEY` injected via Webpack DefinePlugin), or
-  - A small config module that can be swapped without touching UI code.
-
----
-
-## 5. Playlist Modeling
-
-- [ ] Replace the magic `'subplaylist'` marker string with a shared constant, e.g. `SUBPLAYLIST_MARKER_ID`, exported from a single module.
-- [ ] Centralize logic that filters out marker entries so components don’t manually check `track.id !== 'subplaylist'`.
-- [ ] (Optional, larger refactor) Normalize playlist data:
-  - `SubPlaylist { id, name }`.
-  - `Track { id, title, subPlaylistId | null }`.
-  - Store as separate collections or in a normalized structure inside the store.
+Files to touch:  
+- `src/features/player/videoform.tsx`  
+- `src/styles/styles.module.css` (classes `.videoForm`, `.youtubeUrl`, `.submitButton`)
 
 ---
 
-## 6. Type Safety & React Patterns
+## 3. Player Controls Layout & Styling
 
-- [ ] Tighten prop and event typing in components:
-  - Use explicit `React.MouseEvent`, `React.ChangeEvent`, etc. in `sidebar.tsx`, `playList.tsx`, `control.tsx`.
-  - Ensure callbacks have precise types instead of `any`.
-- [ ] Introduce small domain types where useful:
-  - `type SubPlaylistName = string;`
-  - Literal types for special names like `'Main Playlist'`, `'**Untrack**'` exposed from one config module.
+- [ ] Position controls as a dedicated row under the input:
+  - [ ] Ensure controls appear **directly below the input** and are centered within the player container.
+  - [ ] Maintain consistent vertical spacing between input, controls, and the visualizer/player.
+- [ ] Improve control prominence and consistency:
+  - [ ] Increase icon sizes (e.g. use FontAwesome `fa-2x` or adjust font-size in CSS).
+  - [ ] Standardize button shapes and spacing:
+    - [ ] All control buttons share the same size, padding, and border-radius.
+    - [ ] Use consistent gaps between buttons.
+  - [ ] Make the primary action (Play/Pause) visually dominant:
+    - [ ] Apply a primary color background + white icon.
+    - [ ] Secondary actions (mode toggle, repeat, favorite, paste/clear) use lighter styles (outlined or subtle backgrounds).
+- [ ] Ensure controls look good on mobile:
+  - [ ] Confirm buttons are large enough for touch (min ~40x40 px).
+  - [ ] Reduce side padding or switch to wrapping layout on very narrow widths if necessary.
 
----
-
-## 7. Player Component Encapsulation
-
-- [ ] Extract a `useYouTubePlayer` hook from `src/features/player/youtubePlayer.tsx`:
-  - Manages loading the iframe API script.
-  - Handles creating/destroying the `YT.Player` instance.
-  - Encapsulates repeat behavior, visibility tracking, and health checks.
-  - Exposes a small, typed interface to the component (e.g. `loadVideo`, `play`, `pause`, `isReady`).
-- [ ] Keep `YouTubePlayer` mostly declarative:
-  - Subscribe to global store state.
-  - Delegate imperative player management to the hook.
-
----
-
-## 8. Logging & Dev Tooling
-
-- [ ] Replace the global `console.log` override in `src/app/index.tsx` with a dedicated logger utility:
-  - `src/utils/logger.ts` exporting `log(...args)` that:
-    - Sends logs to `/log` only in development.
-    - Delegates to `console.log` in all modes.
-  - Use the logger in places where remote logging is needed, without touching the global console.
+Files to touch:  
+- `src/features/player/control.tsx`  
+- `src/styles/styles.module.css` (controls-related classes)
 
 ---
 
-## 9. Repository Cleanup
+## 4. Player / Visualizer Area
 
-- [x] Remove the legacy Electron runtime and packaging:
-  - Delete `main.js`.
-  - Remove Electron build scripts and `build` config from `package.json`.
-  - Remove Electron-related dev dependencies from `package.json`.
-- [ ] Uninstall Electron-related packages and refresh lockfile:
-  - Run `npm uninstall electron electron-builder` and regenerate `package-lock.json` when convenient.
-- [x] Move ad‑hoc tools into a dedicated folder:
-  - `tools/*` → `scripts/*` (Python helper + JSON data).
-- [x] Ensure documentation is consistent with the new structure:
-  - `README.md` and `ARCHITECTURE.md` describe the app as web/PWA only (Electron is legacy only).
-  - Paths in docs reflect `src/app`, `src/features`, `src/components`, `public/`, and `scripts/`.
+- [ ] Integrate the YouTube player/visualizer into the card:
+  - [ ] Ensure the iframe (`#youtubePlayer`) and the spinning disk visualizer live within the same player container.
+  - [ ] Apply consistent padding around this area so it doesn’t touch container edges.
+- [ ] Harmonize background and borders here:
+  - [ ] Ensure the visualizer background doesn’t clash with the main app background.
+  - [ ] If needed, give the visualizer a subtle border or rounded corners matching the card.
+
+Files to touch:  
+- `src/features/player/youtubePlayer.tsx`  
+- `src/styles/player.module.css`
+
+---
+
+## 5. Track Info Visibility
+
+- [ ] Make the current track info a clear, dedicated element:
+  - [ ] Keep `TrackInfo` visually attached to the player container (inside it, near the bottom).
+  - [ ] When no track is playing, display a clear message like “No track playing” with adequate contrast.
+  - [ ] When a track is playing, emphasize the title using slightly larger or bolder text.
+- [ ] Ensure text contrast and readability:
+  - [ ] Use dark text on light card backgrounds (or invert if you go with a dark theme).
+  - [ ] Avoid overlaying text directly on any high-contrast imagery.
+
+Files to touch:  
+- `src/features/player/trackInfo.tsx`  
+- `src/styles/trackInfo.module.css`
+
+---
+
+## 6. Branding (Header) & Footer
+
+- [ ] Simplify and unify the header branding:
+  - [ ] Ensure the header typography uses a clean, legible font and a controlled color palette (1–2 main colors).
+  - [ ] Avoid heavy effects (extreme shadows/rotations) that compete with the player.
+  - [ ] Consider aligning header branding visually with the player container (e.g. same horizontal width or centered alignment).
+- [ ] Refine footer for clarity and hierarchy:
+  - [ ] Keep contact info and notes **outside** the main player container.
+  - [ ] Use smaller font-size and neutral colors with good contrast (e.g. dark gray text on light gray background).
+  - [ ] Ensure the footer doesn’t visually overpower the player (reduced padding, subtle styling).
+
+Files to touch:  
+- `src/components/layout/headerFooter.tsx`  
+- `src/styles/headerFooter.module.css`
+
+---
+
+## 7. Theming & Design Tokens (Optional but Recommended)
+
+- [ ] Introduce basic design tokens via CSS variables or a small theme module:
+  - [ ] Primary color (e.g. `--color-primary`).
+  - [ ] Background color(s) (`--color-bg`, `--color-card-bg`).
+  - [ ] Text colors (`--color-text`, `--color-muted`).
+- [ ] Use those tokens consistently across:
+  - [ ] Input, buttons, and controls.
+  - [ ] Player container background and borders.
+  - [ ] Header and footer text.
+
+Files to touch:  
+- `src/styles/styles.module.css` (root variables)  
+- Possibly other CSS modules to consume the variables
+
+---
+
+## 8. Micro-Interactions & Polish (After Layout is Stable)
+
+- [ ] Add subtle hover/focus states:
+  - [ ] Input field: border or shadow change on focus.
+  - [ ] Buttons: background/opacity/transform changes on hover/focus.
+- [ ] Ensure transitions are smooth but not distracting:
+  - [ ] Use short transitions (150–250ms) on color/box-shadow changes.
+- [ ] Verify that the layout still looks good with long video titles and on smaller screens.
+
+Files to touch:  
+- Relevant CSS modules (`styles.module.css`, `player.module.css`, `playlist.module.css`, etc.)
 

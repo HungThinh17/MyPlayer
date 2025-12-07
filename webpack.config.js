@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 const setupMiddlewares = require('./webpack.devserver.js');
 
 module.exports = (env, argv) => {
@@ -44,6 +45,9 @@ module.exports = (env, argv) => {
           { from: 'public/site.webmanifest', to: '' },
           { from: 'public/serviceworker.js', to: '' }
         ]
+      }),
+      new webpack.DefinePlugin({
+        'process.env.YT_API_KEY': JSON.stringify(process.env.YT_API_KEY || '')
       })
     ],
 
