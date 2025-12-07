@@ -2,18 +2,7 @@ import * as React from 'react';
 import styles from '../../styles/headerFooter.module.css';
 import { useYouTubeStore } from '../../store/store';
 
-export interface HeaderProps {
-    onToggleSidebar?: () => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
-    const handleTracksClick = (event: React.MouseEvent<HTMLSpanElement>) => {
-        event.stopPropagation();
-        if (onToggleSidebar) {
-            onToggleSidebar();
-        }
-    };
-
+export const Header: React.FC = () => {
     return (
         <header className={styles.header}>
             <h1 className={styles.title}>
@@ -24,7 +13,6 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
                 </span>
                 <span
                     className={`${styles.titleWord} ${styles.titleToggle}`}
-                    onClick={handleTracksClick}
                 >
                     Tracks
                 </span>

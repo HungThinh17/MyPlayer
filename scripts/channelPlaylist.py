@@ -3,10 +3,9 @@ from yt_dlp import YoutubeDL
 
 CHANNEL_URLS = [
     "https://www.youtube.com/@nguhaynghi",
-    "https://www.youtube.com/@DanFoolish",
     # Add more channel URLs here
 ]
-OUTPUT_FILE = "myPlaylist.json"
+OUTPUT_FILE = "scripts/myPlaylist.json"
 
 
 def fetch_channel_data(channel_url):

@@ -13,14 +13,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     justify-content: flex-start;
     background: url('../../resources/hiphopbackground.jpeg') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Arial', sans-serif;
     color: #084126;
     text-align: center;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .title {
@@ -144,4 +144,114 @@
     background-color: #f44336;
     /* Red button */
     color: white;
+}
+
+.mainLayout {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 16px 80px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.playerSection {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.playlistSection {
+    width: 100%;
+    max-width: 480px;
+    margin: 5px auto 0;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playlistActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.playlistActionButton {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 0.85rem;
+}
+
+.playlistActionButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.playlistConfirm {
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.playlistConfirmButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.playlistConfirmButtons button {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.playlistConfirmButtons button:last-child {
+    background-color: #f44336;
+}
+
+.playlistScrollArea {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+    .mainLayout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        column-gap: 16px;
+        align-items: flex-start;
+    }
+
+    .playlistSection {
+        max-height: calc(100vh - 220px);
+    }
 }
