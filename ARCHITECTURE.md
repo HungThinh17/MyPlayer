@@ -2,10 +2,7 @@
 
 ## 1. Overview
 
-MyPlayer is a small YouTube-focused media player that runs as:
-
-- A web/PWA application served from the `dist/` bundle.
-- A desktop application packaged with Electron (Windows MSI installers).
+MyPlayer is a small YouTube-focused media player that runs as a web/PWA application built from the `dist/` bundle.
 
 The application emphasizes:
 
@@ -18,7 +15,7 @@ Core technologies:
 - UI: React 18 + TypeScript.
 - State: Custom React Context store (`YouTubeProvider`).
 - Playback: YouTube IFrame Player API + YouTube Data API (for titles).
-- Packaging: Webpack + Electron + `electron-builder`.
+- Packaging: Webpack (no Electron).
 - PWA: Service worker + web manifest.
 
 ---
@@ -43,12 +40,10 @@ At a high level, MyPlayer consists of these layers:
    - Playlist persistence via `localStorage` (browser).
    - Optional JSON export/import via the Sidebar.
    - `serviceworker.js` and `site.webmanifest` for PWA behavior.
-   - `main.js` and `electron-builder` for desktop packaging.
 
-Runtime environments:
+Runtime environment:
 
-- **Browser/PWA**: `webpack-dev-server` for development, static assets from `dist/` in production.
-- **Electron**: A `BrowserWindow` loads `index.html` and hosts the bundled React app.
+- **Browser/PWA only**: `webpack-dev-server` for development and static assets from `dist/` (plus root `index.html`) in production.
 
 ---
 
@@ -299,32 +294,7 @@ Limitations:
 
 ---
 
-## 10. Electron Desktop Packaging
-
-Electron integration:
-
-- `main.js`:
-  - Creates a `BrowserWindow` with Node integration enabled and context isolation disabled (trusting local content).
-  - Loads the root `index.html`, which in turn loads the bundled React app from `dist/` according to the Webpack output.
-  - Handles standard Electron lifecycle events:
-    - `app.whenReady` -> create main window.
-    - `window-all-closed` -> quit on non-macOS platforms.
-    - `activate` -> recreate a window when none are open on macOS.
-
-Electron builder configuration (`package.json` `build` field):
-
-- Targets:
-  - Windows MSI packages for `x64` and `ia32`.
-- Bundled files:
-  - `index.html`, `main.js`, and everything under `dist/`.
-- MSI settings:
-  - Non-one-click installer with desktop and Start Menu shortcuts enabled.
-
-The `electron/` directory in this repository contains MSI artifacts produced by the build pipeline, not source.
-
----
-
-## 11. Build & Development Pipeline
+## 10. Build & Development Pipeline
 
 Webpack configuration (`webpack.config.js`):
 
@@ -355,12 +325,11 @@ NPM scripts (`package.json`):
 
 - `start`: development server (`webpack serve --mode development`).
 - `build`: clean + production build (`dist/` + `index.html`).
-- `build-dev`: clean + development build.
-- `pack`, `dist`: electron-builder packaging steps.
+-- `build-dev`: clean + development build.
 
 ---
 
-## 12. Extension Points & Considerations
+## 11. Extension Points & Considerations
 
 Potential extension areas:
 
@@ -375,6 +344,6 @@ Potential extension areas:
 
 Notes for contributors:
 
-- Avoid editing files in `dist/` or `electron/` directly; they are build outputs.
+- Avoid editing files in `dist/` directly; it is a build output.
+- The `electron/` directory contains legacy MSI installers from a prior Electron-based distribution flow and is no longer produced or used.
 - Prefer extending the `YouTubeProvider` and React components instead of introducing ad-hoc global state.
-
